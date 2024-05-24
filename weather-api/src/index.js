@@ -1,4 +1,4 @@
-require('dotenv').config(); // 'dotenv' vil automatisk lese .env-db hvis det spesifiseres i docker-compose
+require('dotenv').config();
 
 const express = require('express');
 const { createServer } = require('http');

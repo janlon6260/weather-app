@@ -164,6 +164,7 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 </svelte:head>
 <center>Tabellen oppdaterer seg i sanntid. Klikk på verdiene for å vise trend de siste 24 timene.</center>
+<p>
 <section>
   {#if loaded}
     <div in:fade={{ duration: 500 }} class="weather-card mt-4">
