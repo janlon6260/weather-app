@@ -10,6 +10,17 @@
   function handleClick(location, type) {
     dispatch('fetchTrend', { location, type });
   }
+
+  function isOlderThanOneMinute(dateStr) {
+    if (!dateStr) return false; // If dateStr is undefined, consider it as not old
+
+    const now = new Date();
+    const [hours, minutes] = dateStr.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    const diff = now - date;
+    return diff > 5 * 60 * 1000; // Declare station dead if data is older than 5 minutes
+  }
 </script>
 
 <div class="parameter">
@@ -18,11 +29,11 @@
     <span>{label}</span>
   </div>
   <div class="data-grid">
-    {#each data as { location, class: className, value, imgSrc, bearing, isLast }}
+    {#each data as { location, class: className, value, imgSrc, bearing, date, isLast }}
       <div class="data-row">
         <span class="location">{location}:</span>
         {#if imgSrc}
-          <span class="{className} data-value" on:click={() => handleClick(location, className)}>
+          <span class="{className} data-value {isOlderThanOneMinute(date) ? 'old-data' : ''}" on:click={() => handleClick(location, className)}>
             <img
               class="wind-icon"
               src="{imgSrc}"
@@ -32,7 +43,7 @@
             <b>{value}</b>
           </span>
         {:else}
-          <span class="{className} data-value" on:click={() => handleClick(location, className)}><b>{value}</b></span>
+          <span class="{className} data-value {isOlderThanOneMinute(date) ? 'old-data' : ''}" on:click={() => handleClick(location, className)}><b>{value}</b></span>
         {/if}
       </div>
     {/each}
@@ -91,5 +102,9 @@
     align-items: center;
     flex: 1;
     cursor: pointer;
+  }
+
+  .old-data {
+    color: red;
   }
 </style>

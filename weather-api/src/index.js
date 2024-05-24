@@ -57,20 +57,26 @@ async function fetchData() {
             const response = await axios.get(url);
             const newData = response.data;
 
+            // Ensure the date field is included
+            const enrichedData = {
+                ...newData,
+                date: newData.date || new Date().toISOString().slice(11, 16) // Ensure date field is present and formatted as HH:MM
+            };
+
             if (!data[name]) {
-                data[name] = newData;
-                io.sockets.emit('file-content', { [name]: newData });
+                data[name] = enrichedData;
+                io.sockets.emit('file-content', { [name]: enrichedData });
             } else {
                 const changedValues = {};
 
-                for (const key in newData) {
-                    if (newData[key] !== data[name][key]) {
-                        changedValues[key] = newData[key];
+                for (const key in enrichedData) {
+                    if (enrichedData[key] !== data[name][key]) {
+                        changedValues[key] = enrichedData[key];
                     }
                 }
 
                 if (Object.keys(changedValues).length > 0) {
-                    data[name] = newData;
+                    data[name] = enrichedData;
                     io.sockets.emit('file-content', { [name]: changedValues });
                 }
             }
@@ -132,7 +138,7 @@ io.on('connection', (socket) => {
         try {
             const connection = await mysql.createConnection(dbConfig);
             const [rows] = await connection.execute(
-                `SELECT CONCAT(date, ' ', time) AS timestamp, ${field} as value FROM wx_data WHERE CONCAT(date, ' ', time) >= NOW() - INTERVAL 1 DAY ORDER BY timestamp`
+                `SELECT CONCAT(date, ' ', time) AS timestamp, ${field} as value, date FROM wx_data WHERE CONCAT(date, ' ', time) >= NOW() - INTERVAL 1 DAY ORDER BY timestamp`
             );
             await connection.end();
 
@@ -180,7 +186,7 @@ app.post('/fetch24HourTrend', async (req, res) => {
     try {
         const connection = await mysql.createConnection(dbConfig);
         const [rows] = await connection.execute(
-            `SELECT CONCAT(date, ' ', time) AS timestamp, ${field} as value FROM wx_data WHERE CONCAT(date, ' ', time) >= NOW() - INTERVAL 1 DAY ORDER BY timestamp`
+            `SELECT CONCAT(date, ' ', time) AS timestamp, ${field} as value, date FROM wx_data WHERE CONCAT(date, ' ', time) >= NOW() - INTERVAL 1 DAY ORDER BY timestamp`
         );
         await connection.end();
 

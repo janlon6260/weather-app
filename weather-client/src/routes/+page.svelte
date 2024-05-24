@@ -105,54 +105,54 @@
       icon: "fas fa-thermometer-half",
       label: "Temperatur:",
       data: [
-        { location: "Skodje", class: "temperature", value: `${weather.Skodje.temp} °C`, isLast: false },
-        { location: "Håhjem", class: "temperature", value: `${weather.Hahjem.temp} °C`, isLast: false },
-        { location: "Longva", class: "temperature", value: `${weather.Flemsoy.temp} °C`, isLast: true }
+        { location: "Skodje", class: "temperature", value: `${weather.Skodje.temp} °C`, date: weather.Skodje.date, isLast: false },
+        { location: "Håhjem", class: "temperature", value: `${weather.Hahjem.temp} °C`, date: weather.Hahjem.date, isLast: false },
+        { location: "Longva", class: "temperature", value: `${weather.Flemsoy.temp} °C`, date: weather.Flemsoy.date, isLast: true }
       ]
     },
     {
       icon: "fas fa-chart-bar",
       label: "Barometer:",
       data: [
-        { location: "Skodje", class: "barometer", value: `${weather.Skodje.press} hPa`, isLast: false },
-        { location: "Håhjem", class: "barometer", value: `${weather.Hahjem.press} hPa`, isLast: false },
-        { location: "Longva", class: "barometer", value: `${weather.Flemsoy.press} hPa`, isLast: true }
+        { location: "Skodje", class: "barometer", value: `${weather.Skodje.press} hPa`, date: weather.Skodje.date, isLast: false },
+        { location: "Håhjem", class: "barometer", value: `${weather.Hahjem.press} hPa`, date: weather.Hahjem.date, isLast: false },
+        { location: "Longva", class: "barometer", value: `${weather.Flemsoy.press} hPa`, date: weather.Flemsoy.date, isLast: true }
       ]
     },
     {
       icon: "fas fa-tint",
       label: "Luftfuktighet:",
       data: [
-        { location: "Skodje", class: "humidity", value: `${weather.Skodje.hum} %`, isLast: false },
-        { location: "Håhjem", class: "humidity", value: `${weather.Hahjem.hum} %`, isLast: false },
-        { location: "Longva", class: "humidity", value: `${weather.Flemsoy.hum} %`, isLast: true }
+        { location: "Skodje", class: "humidity", value: `${weather.Skodje.hum} %`, date: weather.Skodje.date, isLast: false },
+        { location: "Håhjem", class: "humidity", value: `${weather.Hahjem.hum} %`, date: weather.Hahjem.date, isLast: false },
+        { location: "Longva", class: "humidity", value: `${weather.Flemsoy.hum} %`, date: weather.Flemsoy.date, isLast: true }
       ]
     },
     {
       icon: "fas fa-cloud-showers-heavy",
       label: "Nedbør nå (totalt i dag):",
       data: [
-        { location: "Skodje", class: "rain", value: `${weather.Skodje.rrate} mm/t (${weather.Skodje.rfall} mm)`, isLast: false },
-        { location: "Håhjem", class: "rain", value: `${weather.Hahjem.rrate} mm/t (${weather.Hahjem.rfall} mm)`, isLast: false },
-        { location: "Longva", class: "rain", value: `${weather.Flemsoy.rrate} mm/t (${weather.Flemsoy.rfall} mm)`, isLast: true }
+        { location: "Skodje", class: "rain", value: `${weather.Skodje.rrate} mm/t (${weather.Skodje.rfall} mm)`, date: weather.Skodje.date, isLast: false },
+        { location: "Håhjem", class: "rain", value: `${weather.Hahjem.rrate} mm/t (${weather.Hahjem.rfall} mm)`, date: weather.Hahjem.date, isLast: false },
+        { location: "Longva", class: "rain", value: `${weather.Flemsoy.rrate} mm/t (${weather.Flemsoy.rfall} mm)`, date: weather.Flemsoy.date, isLast: true }
       ]
     },
     {
       icon: "fas fa-wind",
       label: "Sanntid vind nå (middelvind):",
       data: [
-        { location: "Skodje", class: "currwind", value: `${weather.Skodje.wlatest} (${weather.Skodje.wspeed}) m/s`, imgSrc: currentbSkodje, bearing: weather.Skodje.bearing, isLast: false },
-        { location: "Håhjem", class: "currwind", value: `${weather.Hahjem.wlatest} (${weather.Hahjem.wspeed}) m/s`, imgSrc: currentbHahjem, bearing: weather.Hahjem.bearing, isLast: false },
-        { location: "Longva", class: "currwind", value: `${weather.Flemsoy.wlatest} (${weather.Flemsoy.wspeed}) m/s`, imgSrc: currentbFlemsoy, bearing: weather.Flemsoy.bearing, isLast: true }
+        { location: "Skodje", class: "currwind", value: `${weather.Skodje.wlatest} (${weather.Skodje.wspeed}) m/s`, imgSrc: currentbSkodje, bearing: weather.Skodje.bearing, date: weather.Skodje.date, isLast: false },
+        { location: "Håhjem", class: "currwind", value: `${weather.Hahjem.wlatest} (${weather.Hahjem.wspeed}) m/s`, imgSrc: currentbHahjem, bearing: weather.Hahjem.bearing, date: weather.Hahjem.date, isLast: false },
+        { location: "Longva", class: "currwind", value: `${weather.Flemsoy.wlatest} (${weather.Flemsoy.wspeed}) m/s`, imgSrc: currentbFlemsoy, bearing: weather.Flemsoy.bearing, date: weather.Flemsoy.date, isLast: true }
       ]
     },
     {
       icon: "fas fa-wind",
       label: "Høyeste vindkast i dag:",
       data: [
-        { location: "Skodje", class: "gustwind", value: `${weather.Skodje.wgustTM} m/s - registrert klokken ${weather.Skodje.TwgustTM}`, isLast: false },
-        { location: "Håhjem", class: "gustwind", value: `${weather.Hahjem.wgustTM} m/s - registrert klokken ${weather.Hahjem.TwgustTM}`, isLast: false },
-        { location: "Longva", class: "gustwind", value: `${weather.Flemsoy.wgustTM} m/s - registrert klokken ${weather.Flemsoy.TwgustTM}`, isLast: true }
+        { location: "Skodje", class: "gustwind", value: `${weather.Skodje.wgustTM} m/s - registrert klokken ${weather.Skodje.TwgustTM}`, date: weather.Skodje.date, isLast: false },
+        { location: "Håhjem", class: "gustwind", value: `${weather.Hahjem.wgustTM} m/s - registrert klokken ${weather.Hahjem.TwgustTM}`, date: weather.Hahjem.date, isLast: false },
+        { location: "Longva", class: "gustwind", value: `${weather.Flemsoy.wgustTM} m/s - registrert klokken ${weather.Flemsoy.TwgustTM}`, date: weather.Flemsoy.date, isLast: true }
       ]
     }
   ];
