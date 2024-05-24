@@ -29,7 +29,8 @@
     barometer: 'Barometertrend',
     rain: 'Nedbørstrend',
     daily_rainfall: 'Daglig nedbørstrend',
-    currwind: 'Middelvindstrend'
+    currwind: 'Middelvindstrend',
+    gustwind: 'Vindkasttrend'
   };
 
   const suffixMap = {
