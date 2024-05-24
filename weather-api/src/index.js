@@ -136,7 +136,13 @@ io.on('connection', (socket) => {
             );
             await connection.end();
 
-            socket.emit('trendData', { station, type, data: rows });
+            // Convert km/h to m/s if the type is 'currwind'
+            const convertedRows = rows.map(row => ({
+                ...row,
+                value: type === 'currwind' ? row.value * 0.277778 : row.value
+            }));
+
+            socket.emit('trendData', { station, type, data: convertedRows });
         } catch (error) {
             console.error(`Error querying data for ${station} and type ${type}: ${error.message}`);
             socket.emit('trendData', { error: `Error querying data for ${station} and type ${type}: ${error.message}` });
@@ -177,7 +183,14 @@ app.post('/fetch24HourTrend', async (req, res) => {
             `SELECT CONCAT(date, ' ', time) AS timestamp, ${field} as value FROM wx_data WHERE CONCAT(date, ' ', time) >= NOW() - INTERVAL 1 DAY ORDER BY timestamp`
         );
         await connection.end();
-        res.json({ station, type, data: rows });
+
+        // Convert km/h to m/s if the type is 'currwind'
+        const convertedRows = rows.map(row => ({
+            ...row,
+            value: type === 'currwind' ? row.value * 0.277778 : row.value
+        }));
+
+        res.json({ station, type, data: convertedRows });
     } catch (error) {
         console.error(`Error querying data for ${station} and type ${type}: ${error.message}`);
         res.status(500).json({ error: `Error querying data for ${station} and type ${type}: ${error.message}` });

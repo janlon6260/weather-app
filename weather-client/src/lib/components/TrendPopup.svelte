@@ -1,8 +1,8 @@
 <script>
   import { createEventDispatcher, onMount, onDestroy } from 'svelte';
   import { Chart, registerables } from 'chart.js';
-  import 'chartjs-adapter-date-fns';  // Import the date adapter
-  import { nb } from 'date-fns/locale'; // Import Norwegian locale for date-fns
+  import 'chartjs-adapter-date-fns';
+  import { nb } from 'date-fns/locale';
   Chart.register(...registerables);
 
   export let selectedLocation;
@@ -32,6 +32,15 @@
     currwind: 'Middelvindstrend'
   };
 
+  const suffixMap = {
+    temperature: ' °C',
+    humidity: ' %',
+    barometer: ' hPa',
+    rain: ' mm',
+    daily_rainfall: ' mm',
+    currwind: ' m/s'
+  };
+
   function createChart() {
     if (chart) {
       chart.destroy();
@@ -59,26 +68,43 @@
               type: 'time',
               time: {
                 unit: 'hour',
-                tooltipFormat: 'HH:mm', // Format time in tooltip
+                tooltipFormat: 'HH:mm',
                 displayFormats: {
-                  hour: 'HH:mm' // Format time on x-axis
+                  hour: 'HH:mm'
                 }
               },
               adapters: {
                 date: {
-                  locale: nb // Use Norwegian locale
+                  locale: nb
                 }
               },
               title: {
-                display: true,
+                display: false,
                 text: 'Tid'
               }
             },
             y: {
               title: {
-                display: true,
+                display: false,
                 text: typeLabelMap[selectedType] || selectedType
+              },
+              ticks: {
+                callback: function(value) {
+                  return value + (suffixMap[selectedType] || '');
+                }
               }
+            }
+          },
+          plugins: {
+            tooltip: {
+              callbacks: {
+                label: function(tooltipItem) {
+                  return tooltipItem.formattedValue + (suffixMap[selectedType] || '');
+                }
+              }
+            },
+            legend: {
+              display: false // Hide the legend
             }
           }
         }
@@ -88,14 +114,12 @@
 
   onMount(() => {
     // console.log('Trend data in TrendPopup:', trendData);
-    // Initial check if data is already available
     if (trendData.length > 0) {
       dataLoaded = true;
       createChart();
     }
   });
 
-  // Watcher for trendData, selectedLocation, and selectedType changes
   $: if (chartCanvas) {
     createChart();
   }
@@ -113,7 +137,7 @@
 
 <div class="popup-overlay" on:click={closePopup}>
   <div class="popup" on:click|stopPropagation>
-    <h2>Trend siste 24 timer for {selectedLocation} - {typeLabelMap[selectedType] || selectedType}</h2>
+    <h2><b>{selectedLocation} - {typeLabelMap[selectedType] || selectedType} siste 24t</b></h2>
     <button class="close-btn" on:click={closePopup}>X</button>
     <div class="trend-data">
       {#if error}
