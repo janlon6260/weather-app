@@ -1,0 +1,27 @@
+name: API - Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "weather-api/**"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment: prod
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Build Docker Image
+        working-directory: ./weather-api
+        run: |
+          docker build -t janlon6260/weather-api:latest .
+
+      - name: Log in to Docker Hub
+        run: docker login -u janlon6260 -p ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker Image
+        run: docker push janlon6260/weather-api:latest
