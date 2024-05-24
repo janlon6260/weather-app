@@ -39,7 +39,8 @@
     barometer: ' hPa',
     rain: ' mm',
     daily_rainfall: ' mm',
-    currwind: ' m/s'
+    currwind: ' m/s',
+    gustwind: ' m/s'
   };
 
   function createChart() {

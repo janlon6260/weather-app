@@ -104,9 +104,25 @@ io.on('connection', (socket) => {
                 `SELECT * FROM wx_data WHERE DATE(date) = ?`,
                 [date]
             );
+            const [maxGustRow] = await connection.execute(
+                `SELECT max_gust_current_day FROM wx_data WHERE DATE(date) = ? AND HOUR(time) = 23 ORDER BY time DESC LIMIT 1`,
+                [date]
+            );
+            const [dailyRainfallRow] = await connection.execute(
+                `SELECT daily_rainfall FROM wx_data WHERE DATE(date) = ? AND HOUR(time) = 23 ORDER BY time DESC LIMIT 1`,
+                [date]
+            );
             await connection.end();
 
-            socket.emit('trendData', { station, data: rows });
+            const maxGust = maxGustRow.length > 0 ? maxGustRow[0].max_gust_current_day : 0;
+            const dailyRainfall = dailyRainfallRow.length > 0 ? dailyRainfallRow[0].daily_rainfall : 0;
+
+            socket.emit('trendData', {
+                station,
+                data: rows,
+                maxGust: (maxGust * 0.277778).toFixed(1),
+                dailyRainfall: dailyRainfall.toFixed(1)
+            });
         } catch (error) {
             console.error(`Error querying data for ${station}: ${error.message}`);
             socket.emit('trendData', { error: 'Error querying data' });
@@ -143,10 +159,10 @@ io.on('connection', (socket) => {
             );
             await connection.end();
 
-            // Convert km/h to m/s if the type is 'currwind' or 'gustwind'
+            // Convert km/h to m/s if the type is 'currwind'
             const convertedRows = rows.map(row => ({
                 ...row,
-                value: (type === 'currwind' || type === 'gustwind') ? row.value * 0.277778 : row.value
+                value: type === 'currwind' ? row.value * 0.277778 : row.value
             }));
 
             socket.emit('trendData', { station, type, data: convertedRows });
@@ -192,10 +208,10 @@ app.post('/fetch24HourTrend', async (req, res) => {
         );
         await connection.end();
 
-        // Convert km/h to m/s if the type is 'currwind' or 'gustwind'
+        // Convert km/h to m/s if the type is 'currwind'
         const convertedRows = rows.map(row => ({
             ...row,
-            value: (type === 'currwind' || type === 'gustwind') ? row.value * 0.277778 : row.value
+            value: type === 'currwind' ? row.value * 0.277778 : row.value
         }));
 
         res.json({ station, type, data: convertedRows });
