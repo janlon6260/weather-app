@@ -39,6 +39,22 @@
     12: BF12
   };
 
+  const beaufortDescriptions = {
+    0: 'Stille',
+    1: 'Svak vind',
+    2: 'Lett bris',
+    3: 'Svak bris',
+    4: 'Moderat bris',
+    5: 'Frisk bris',
+    6: 'Liten kuling',
+    7: 'Stiv kuling',
+    8: 'Sterk kuling',
+    9: 'Liten storm',
+    10: 'Full storm',
+    11: 'Sterk storm',
+    12: 'Orkan'
+  };
+
   let loaded = false;
   let weather = {
     Flemsoy: { ...weatherData },
@@ -141,9 +157,9 @@
       icon: "fas fa-wind",
       label: "Sanntid vind nå (middelvind):",
       data: [
-        { location: "Skodje", class: "currwind", value: `${weather.Skodje.wlatest} (${weather.Skodje.wspeed}) m/s`, imgSrc: currentbSkodje, bearing: weather.Skodje.bearing, date: weather.Skodje.date, isLast: false },
-        { location: "Håhjem", class: "currwind", value: `${weather.Hahjem.wlatest} (${weather.Hahjem.wspeed}) m/s`, imgSrc: currentbHahjem, bearing: weather.Hahjem.bearing, date: weather.Hahjem.date, isLast: false },
-        { location: "Longva", class: "currwind", value: `${weather.Flemsoy.wlatest} (${weather.Flemsoy.wspeed}) m/s`, imgSrc: currentbFlemsoy, bearing: weather.Flemsoy.bearing, date: weather.Flemsoy.date, isLast: true }
+        { location: "Skodje", class: "currwind", description: beaufortDescriptions[extractNumber(weather.Skodje.beaufort)], value: `${weather.Skodje.wlatest} (${weather.Skodje.wspeed}) m/s`, imgSrc: currentbSkodje, bearing: weather.Skodje.bearing, date: weather.Skodje.date, isLast: false },
+        { location: "Håhjem", class: "currwind", description: beaufortDescriptions[extractNumber(weather.Hahjem.beaufort)], value: `${weather.Hahjem.wlatest} (${weather.Hahjem.wspeed}) m/s`, imgSrc: currentbHahjem, bearing: weather.Hahjem.bearing, date: weather.Hahjem.date, isLast: false },
+        { location: "Longva", class: "currwind", description: beaufortDescriptions[extractNumber(weather.Flemsoy.beaufort)], value: `${weather.Flemsoy.wlatest} (${weather.Flemsoy.wspeed}) m/s`, imgSrc: currentbFlemsoy, bearing: weather.Flemsoy.bearing, date: weather.Flemsoy.date, isLast: true }
       ]
     },
     {
@@ -162,6 +178,8 @@
   <title>Været på Sunnmøre</title>
   <meta name="description" content="Været på Sunnmøre" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <meta name="keywords" content="Været på Skodje, Været på Håhjem, Været på Longva, Været i Ålesund, Flemsøy, Skuløy, Skodje, Ålesund, Haram, Været på Sunnmøre, Vind Sunnmøre">
+  <meta name="author" content="Longvastøl Data">
 </svelte:head>
 <center>Tabellen oppdaterer seg i sanntid. Klikk på verdiene for å vise trend de siste 24 timene.</center>
 <p>

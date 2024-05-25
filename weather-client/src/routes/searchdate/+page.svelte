@@ -126,5 +126,7 @@
 </center>
 <svelte:head>
 	<title>Datosøk</title>
-	<meta name="description" content="About this app" />
+	<meta name="description" content="Datosøk på været som har vært" />
+  <meta name="keywords" content="Været som har vært på Skodje, Været som har vært på Håhjem, Været som har vært på Longva, Været i Ålesund, Flemsøy, Skuløy, Skodje, Ålesund, Haram, Været på Sunnmøre, Vind Sunnmøre">
+  <meta name="author" content="Longvastøl Data">
 </svelte:head>
