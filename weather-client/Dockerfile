@@ -10,6 +10,8 @@ COPY package*.json ./
 # Install project dependencies
 RUN npm install
 
+RUN npx svelte-kit sync
+
 # Copy the entire project to the working directory
 COPY . .
 
