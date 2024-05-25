@@ -9,10 +9,10 @@
 
   const beaufortDescriptions = {
     0: 'Stille',
-    1: 'Svak vind',
-    2: 'Lett bris',
-    3: 'Svak bris',
-    4: 'Moderat bris',
+    1: 'Flau vind',
+    2: 'Svak vind',
+    3: 'Lett bris',
+    4: 'Laber bris',
     5: 'Frisk bris',
     6: 'Liten kuling',
     7: 'Stiv kuling',
