@@ -64,9 +64,15 @@
   }
 
   .alert-box {
-    width: 600px;
+    width: 100%;
+    max-width: 600px;
     padding: 10px;
     text-align: left;
+    font-family: var(--font-body);
+    color: var(--color-text);
+    background-color: rgba(255, 255, 255, 0.45);
+    border-radius: 3px;
+    box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
   }
 
   .yellow-alert {
@@ -93,6 +99,12 @@
 
   .alert-content {
     margin-top: 5px;
+  }
+
+  @media (max-width: 600px) {
+    .alert-box {
+      width: 90%;
+    }
   }
 </style>
 
