@@ -1,4 +1,6 @@
 <script>
+	import WeatherAlerts from './../lib/components/WeatherAlerts.svelte';
+
   import BF0 from '$lib/images/0.svg';
   import BF1 from '$lib/images/1.svg';
   import BF2 from '$lib/images/2.svg';
@@ -181,7 +183,10 @@
   <meta name="keywords" content="Været på Skodje, Været på Håhjem, Været på Longva, Været i Ålesund, Flemsøy, Skuløy, Skodje, Ålesund, Haram, Været på Sunnmøre, Vind Sunnmøre">
   <meta name="author" content="Longvastøl Data">
 </svelte:head>
-<center>Tabellen oppdaterer seg i sanntid. Klikk på verdiene for å vise trend de siste 24 timene.</center>
+
+<WeatherAlerts />
+
+<center>Klikk på verdiene for å vise trend de siste 24 timene.</center>
 <p>
 <section>
   {#if loaded}

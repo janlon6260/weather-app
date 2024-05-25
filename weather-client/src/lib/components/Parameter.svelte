@@ -27,7 +27,7 @@
     dispatch('fetchTrend', { location, type });
   }
 
-  function isOlderThanOneMinute(dateStr) {
+  function isOlderThanXMinutes(dateStr) {
     if (!dateStr) return false; // If dateStr is undefined, consider it as not old
 
     const now = new Date();
@@ -49,7 +49,7 @@
       <div class="data-row">
         <span class="location">{location}:</span>
         {#if imgSrc}
-          <span class="{className} data-value {isOlderThanOneMinute(date) ? 'old-data' : ''}" on:click={() => handleClick(location, className)}>
+          <span class="{className} data-value {isOlderThanXMinutes(date) ? 'old-data' : ''}" on:click={() => handleClick(location, className)}>
             <div class="wind-container">
               <img
                 class="wind-icon"
@@ -62,7 +62,7 @@
             <b class="value">{value}</b>
           </span>
         {:else}
-          <span class="{className} data-value {isOlderThanOneMinute(date) ? 'old-data' : ''}" on:click={() => handleClick(location, className)}><b>{value}</b></span>
+          <span class="{className} data-value {isOlderThanXMinutes(date) ? 'old-data' : ''}" on:click={() => handleClick(location, className)}><b>{value}</b></span>
         {/if}
       </div>
     {/each}

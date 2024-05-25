@@ -4,7 +4,7 @@
   import { format } from 'date-fns';
   import { nb } from 'date-fns/locale';
 
-  let selectedDate = '';
+  let selectedDate = new Date().toISOString().substring(0,10);
   let selectedStation = 'Skodje'; // Default station
   let weatherData = [];
   let maxGust = 0;
@@ -52,6 +52,7 @@
       maxGust = data.maxGust;
       dailyRainfall = data.dailyRainfall;
     });
+    fetchWeatherData()
   });
 </script>
 <center>
@@ -97,32 +98,32 @@
       <p><b>Høyeste vindkast denne dagen:</b> {maxGust} m/s</p>
       <p><b>Total nedbør denne dagen:</b> {dailyRainfall} mm</p>
     </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Dato</th>
-          <th>Klokkeslett</th>
-          <th>Temperatur (°C)</th>
-          <th>Barometer (hPa)</th>
-          <th>Luftfuktighet (%)</th>
-        </tr>
-      </thead>
-      <tbody>
-        {#each weatherData as item}
+    <div style="overflow-x:auto;">
+      <table>
+        <thead>
           <tr>
-            <td>{formatDate(item.date)}</td>
+            <th>Klokkeslett</th>
+            <th>Temperatur (°C)</th>
+            <th>Barometer (hPa)</th>
+            <th>Luftfuktighet (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each weatherData as item}
+          <tr>
             <td>{formatTime(item.time)}</td>
             <td>{Number(item.temperature).toFixed(1)}</td>
             <td>{Number(item.barometer).toFixed(1)}</td>
             <td>{Number(item.outdoor_humidity).toFixed(1)}</td>
           </tr>
-        {/each}
-      </tbody>
-    </table>
-  {:else}
+          {/each}
+        </tbody>
+      </table>
+    </div>
+      {:else}
     <p>Ingen data tilgjengelig for valgt dato.</p>
-  {/if}
-</div>
+    {/if}
+  </div>
 </center>
 <svelte:head>
 	<title>Datosøk</title>

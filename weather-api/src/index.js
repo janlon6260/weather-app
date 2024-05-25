@@ -57,10 +57,9 @@ async function fetchData() {
             const response = await axios.get(url);
             const newData = response.data;
 
-            // Ensure the date field is included
             const enrichedData = {
                 ...newData,
-                date: newData.date || new Date().toISOString().slice(11, 16) // Ensure date field is present and formatted as HH:MM
+                date: newData.date || new Date().toLocaleTimeString().slice(11, 16) // Ensure date field is present and formatted as HH:MM
             };
 
             if (!data[name]) {
@@ -177,7 +176,7 @@ setInterval(() => {
     fetchData();
 }, 1000);
 
-app.post('/fetch24HourTrend', async (req, res) => {
+app.get('/fetch24HourTrend', async (req, res) => {
     const { station, type } = req.body;
     const dbConfig = dbConfigs[station];
     if (!dbConfig) {
