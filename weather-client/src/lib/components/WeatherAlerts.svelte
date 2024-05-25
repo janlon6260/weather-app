@@ -91,6 +91,7 @@
     margin: 0;
     display: flex;
     align-items: center;
+    line-height: var(--line-height-header, 1.2); /* Adjust line height for header */
   }
 
   .alert-header i {
@@ -99,6 +100,7 @@
 
   .alert-content {
     margin-top: 5px;
+    line-height: var(--line-height-content, 1.4); /* Adjust line height for content */
   }
 
   @media (max-width: 600px) {
