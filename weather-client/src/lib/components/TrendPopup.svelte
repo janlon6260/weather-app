@@ -43,20 +43,36 @@
     gustwind: ' m/s'
   };
 
+  function filterHourlyData(data) {
+    const hourlyData = [];
+    const seenHours = new Set();
+
+    for (const item of data) {
+      const hour = new Date(item.timestamp).getHours();
+      if (!seenHours.has(hour)) {
+        hourlyData.push(item);
+        seenHours.add(hour);
+      }
+    }
+    return hourlyData;
+  }
+
   function createChart() {
     if (chart) {
       chart.destroy();
     }
 
-    if (trendData.length > 0 && chartCanvas) {
+    const filteredTrendData = filterHourlyData(trendData);
+
+    if (filteredTrendData.length > 0 && chartCanvas) {
       const ctx = chartCanvas.getContext('2d');
       chart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: trendData.map(data => new Date(data.timestamp)),
+          labels: filteredTrendData.map(data => new Date(data.timestamp)),
           datasets: [{
             label: typeLabelMap[selectedType] || `${selectedType} trend`,
-            data: trendData.map(data => data.value),
+            data: filteredTrendData.map(data => data.value),
             borderColor: 'rgba(75, 192, 192, 1)',
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             fill: false,
