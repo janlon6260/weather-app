@@ -123,7 +123,7 @@
           {alert.properties.eventAwarenessName}
         </h3>
         <div class="alert-content">
-          <b>Alvorlighetsgrad:</b> {getSeverityLabel(alert.properties.severity)}
+          <b>Grad:</b> {getSeverityLabel(alert.properties.severity)}
           {#if alert.properties.when && alert.properties.when.interval}
             <br><b>Start:</b> {new Date(alert.properties.when.interval[0]).toLocaleString('no-NO')}
             <br><b>Slutt:</b> {new Date(alert.properties.when.interval[1]).toLocaleString('no-NO')}
