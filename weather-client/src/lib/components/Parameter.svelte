@@ -146,7 +146,6 @@
   flex: 1;
   cursor: pointer;
   max-width: 100%;
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
