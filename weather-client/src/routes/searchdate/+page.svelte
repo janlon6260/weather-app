@@ -96,16 +96,16 @@
   {#if weatherData.length > 0}
     <div>
       <p><b>Høyeste vindkast denne dagen:</b> {maxGust} m/s</p>
-      <p><b>Total nedbør denne dagen:</b> {dailyRainfall} mm</p>
+      <p><b>Nedbør denne dagen:</b> {dailyRainfall} mm</p>
     </div>
     <div style="overflow-x:auto;">
       <table>
         <thead>
           <tr>
-            <th>Klokkeslett</th>
-            <th>Temperatur (°C)</th>
+            <th>Klokken</th>
+            <th>Temp. (°C)</th>
             <th>Barometer (hPa)</th>
-            <th>Luftfuktighet (%)</th>
+            <th>Fuktighet (%)</th>
           </tr>
         </thead>
         <tbody>

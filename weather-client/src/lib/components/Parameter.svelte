@@ -28,14 +28,14 @@
   }
 
   function isOlderThanXMinutes(dateStr) {
-    if (!dateStr) return false; // If dateStr is undefined, consider it as not old
+    if (!dateStr) return false;
 
     const now = new Date();
     const [hours, minutes] = dateStr.split(':').map(Number);
     const date = new Date();
     date.setHours(hours, minutes, 0, 0);
     const diff = now - date;
-    return diff > 5 * 60 * 1000; // Declare station dead if data is older than 5 minutes
+    return diff > 5 * 60 * 1000; // Declare station dead if timestamp is older than 5 minutes
   }
 </script>
 
@@ -46,7 +46,7 @@
   </div>
   <div class="data-grid">
     {#each data as { location, class: className, value, imgSrc, bearing, description, date, isLast }}
-      <div class="data-row">
+      <div class="data-row {className === 'currwind' ? 'currwind-row' : ''}">
         <span class="location">{location}:</span>
         {#if imgSrc}
           <span class="{className} data-value {isOlderThanXMinutes(date) ? 'old-data' : ''}" on:click={() => handleClick(location, className)}>
@@ -97,6 +97,10 @@
     gap: 1rem;
   }
 
+  .currwind-row {
+    margin-bottom: -1.0rem;
+  }
+
   .location {
     font-weight: normal;
     flex-shrink: 0;
@@ -108,9 +112,9 @@
   }
 
   .wind-container {
-  display: flex;
-  align-items: center;
-}
+    display: flex;
+    align-items: center;
+  }
 
   .temperature, .barometer, .humidity, .rain, .currwind, .gustwind {
     display: flex;
@@ -118,15 +122,15 @@
   }
 
   .wind-icon {
-  margin-right: 1.0rem;
-  flex-shrink: 0;
-}
+    margin-right: 1.0rem;
+    flex-shrink: 0;
+  }
 
-.description {
-  font-weight: bold;
-  margin-right: 0.5rem;
-  white-space: nowrap; 
-}
+  .description {
+    font-weight: bold;
+    margin-right: 0.5rem;
+    white-space: nowrap; 
+  }
 
   .data-value {
     display: flex;
@@ -140,7 +144,7 @@
   }
 
   .value {
-  flex-shrink: 0;
-  white-space: nowrap;
-}
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
 </style>

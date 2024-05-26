@@ -1,5 +1,5 @@
 <script>
-	import WeatherAlerts from './../lib/components/WeatherAlerts.svelte';
+  import WeatherAlerts from './../lib/components/WeatherAlerts.svelte';
 
   import BF0 from '$lib/images/0.svg';
   import BF1 from '$lib/images/1.svg';
@@ -186,8 +186,7 @@
 
 <WeatherAlerts />
 
-<center>Klikk på verdiene for å vise trend de siste 24 timene.</center>
-<p>
+<div class=toptext>Klikk på verdiene for å vise trend de siste 24 timene.</div>
 <section>
   {#if loaded}
     <div in:fade={{ duration: 500 }} class="weather-card mt-4">
@@ -196,6 +195,11 @@
           <Parameter {icon} {label} {data} on:fetchTrend={handleFetchTrend} />
         {/each}
       </div>
+    </div>
+  {:else}
+    <div class="loading">
+      <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+      <span>Laster inn værdata...</span>
     </div>
   {/if}
 </section>
@@ -216,6 +220,28 @@
   .parameter-box {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
+  }
+
+  .toptext {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 1.0rem;
+  }
+
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-size: 1.5rem;
+    color: #555;
+  }
+
+  .loading i {
+    font-size: 2rem;
+    margin-bottom: 1rem;
   }
 </style>
