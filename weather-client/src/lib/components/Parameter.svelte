@@ -145,6 +145,21 @@
   align-items: center;
   flex: 1;
   cursor: pointer;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.currwind .data-value {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  cursor: pointer;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .old-data {

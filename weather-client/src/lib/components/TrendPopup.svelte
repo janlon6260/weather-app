@@ -10,6 +10,7 @@
   export let trendData = [];
   export let onClose;
   export let error = '';
+  export let chartWidth = '100%';
 
   const dispatch = createEventDispatcher();
   let chartCanvas;
@@ -122,7 +123,7 @@
               }
             },
             legend: {
-              display: false // Hide the legend
+              display: false
             }
           }
         }
@@ -131,7 +132,6 @@
   }
 
   onMount(() => {
-    // console.log('Trend data in TrendPopup:', trendData);
     if (trendData.length > 0) {
       dataLoaded = true;
       createChart();
@@ -161,7 +161,7 @@
       {#if error}
         <p>Ingen data tilgjengelig</p>
       {:else if trendData.length > 0}
-        <canvas bind:this={chartCanvas}></canvas>
+        <canvas bind:this={chartCanvas} style="width: {chartWidth};"></canvas>
       {:else}
         <p>Ingen data tilgjengelig</p>
       {/if}
@@ -185,10 +185,10 @@
 
   .popup {
     background: white;
-    padding: 2rem;
-    border-radius: 8px;
+    padding: 0rem;
+    border-radius: 5px;
     position: relative;
-    width: 80%;
+    width: 100%;
     max-width: 600px;
   }
 
