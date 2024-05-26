@@ -39,7 +39,7 @@
   }
 </script>
 
-<div class="parameter">
+<div class="parameter {label === 'Sanntid vind nå (middelvind):' ? 'currwind-parameter' : ''}">
   <div class="icon-and-label">
     <i class="{icon}" aria-hidden="true"></i>
     <span>{label}</span>
@@ -70,81 +70,90 @@
 </div>
 
 <style>
-  .parameter {
-    display: flex;
-    flex-direction: column;
-  }
+.parameter {
+  display: flex;
+  flex-direction: column;
+}
 
-  .icon-and-label {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
+.icon-and-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
 
-  .icon-and-label i {
+.icon-and-label i {
     margin-right: 0.5rem;
   }
 
-  .data-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+.data-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 
-  .data-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+.data-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
 
-  .currwind-row {
-    margin-bottom: -1.0rem;
-  }
+.currwind-row {
+  margin-bottom: -1.0rem;
+}
 
-  .location {
-    font-weight: normal;
-    flex-shrink: 0;
-    width: 60px;
-  }
+.currwind-parameter .icon-and-label {
+  margin-bottom: 0.5rem;
+}
 
-  .label {
-    font-weight: normal;
-  }
+.currwind-parameter .data-grid {
+  margin-top: -0.5rem;
+}
 
-  .wind-container {
-    display: flex;
-    align-items: center;
-  }
+.location {
+  font-weight: normal;
+  flex-shrink: 0;
+  width: 60px;
+}
 
-  .temperature, .barometer, .humidity, .rain, .currwind, .gustwind {
-    display: flex;
-    align-items: center;
-  }
+.label {
+  font-weight: normal;
+}
 
-  .wind-icon {
-    margin-right: 1.0rem;
-    flex-shrink: 0;
-  }
+.wind-container {
+  display: flex;
+  align-items: center;
+}
 
-  .description {
-    font-weight: bold;
-    margin-right: 0.5rem;
-    white-space: nowrap; 
-  }
+.temperature, .barometer, .humidity, .rain, .currwind, .gustwind {
+  display: flex;
+  align-items: center;
+}
 
-  .data-value {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    cursor: pointer;
-  }
+.wind-icon {
+  margin-right: 1.0rem;
+  flex-shrink: 0;
+}
 
-  .old-data {
-    color: red;
-  }
+.description {
+  font-weight: bold;
+  margin-right: 0.5rem;
+  white-space: nowrap;
+}
 
-  .value {
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
+.data-value {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  cursor: pointer;
+}
+
+.old-data {
+  color: red;
+}
+
+.value {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
 </style>

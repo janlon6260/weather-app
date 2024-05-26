@@ -168,9 +168,9 @@
       icon: "fas fa-wind",
       label: "Høyeste vindkast i dag:",
       data: [
-        { location: "Skodje", class: "gustwind", value: `${weather.Skodje.wgustTM} m/s - registrert klokken ${weather.Skodje.TwgustTM}`, date: weather.Skodje.date, isLast: false },
-        { location: "Håhjem", class: "gustwind", value: `${weather.Hahjem.wgustTM} m/s - registrert klokken ${weather.Hahjem.TwgustTM}`, date: weather.Hahjem.date, isLast: false },
-        { location: "Longva", class: "gustwind", value: `${weather.Flemsoy.wgustTM} m/s - registrert klokken ${weather.Flemsoy.TwgustTM}`, date: weather.Flemsoy.date, isLast: true }
+        { location: "Skodje", class: "gustwind", value: `${weather.Skodje.wgustTM} m/s - klokken ${weather.Skodje.TwgustTM}`, date: weather.Skodje.date, isLast: false },
+        { location: "Håhjem", class: "gustwind", value: `${weather.Hahjem.wgustTM} m/s - klokken ${weather.Hahjem.TwgustTM}`, date: weather.Hahjem.date, isLast: false },
+        { location: "Longva", class: "gustwind", value: `${weather.Flemsoy.wgustTM} m/s - klokken ${weather.Flemsoy.TwgustTM}`, date: weather.Flemsoy.date, isLast: true }
       ]
     }
   ];
