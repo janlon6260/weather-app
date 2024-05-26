@@ -155,7 +155,7 @@
 
 <div class="popup-overlay" on:click={closePopup}>
   <div class="popup" on:click|stopPropagation>
-    <h2><b>{selectedLocation} - {typeLabelMap[selectedType] || selectedType} siste 24t</b></h2>
+    <h2 class="title"><b>{selectedLocation} - {typeLabelMap[selectedType] || selectedType} siste 24t</b></h2>
     <button class="close-btn" on:click={closePopup}>X</button>
     <div class="trend-data">
       {#if error}
@@ -205,4 +205,10 @@
   .trend-data {
     margin-top: 1rem;
   }
+
+  .title {
+  text-align: center;
+  margin-right: 20px;
+}
+
 </style>
