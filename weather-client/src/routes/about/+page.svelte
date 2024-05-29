@@ -7,13 +7,13 @@
 </svelte:head>
 <h1>Om denne siden</h1>
 <center>
-<b>Værstasjon Skodje:</b>
+<b>Værstasjon Skodje sentrum, Ålesund:</b>
 <br>Davis Vantage Vue  (85 moh.), 7 meter over terrenget
 <p></p>
-<b>Værstasjon Håhjem:</b>
+<b>Værstasjon Håhjem, Grønvika, Ålesund:</b>
 <br>Davis Vantage Pro2 (10 moh.), 5 meter over terrenget
 <p></p>
-<b>Værstasjon Longva:</b>
+<b>Værstasjon Longva, Haram:</b>
 <br>Davis Vantage Vue  (13 moh.), 7 meter over terrenget
 <p></p>
 Kontakt:

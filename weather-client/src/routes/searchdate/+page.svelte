@@ -14,6 +14,7 @@
   let maxRainRate = 0;
   let socket;
   let stations = ['Skodje', 'Håhjem', 'Longva'];
+  let isLoading = false;
 
   function getYesterdayDate() {
     const today = new Date();
@@ -41,6 +42,7 @@
 
   function fetchWeatherData() {
     if (!selectedDate || !selectedStation) return;
+    isLoading = true;
     socket.emit('searchByDate', { station: selectedStation, date: selectedDate });
   }
 
@@ -63,6 +65,7 @@
     socket.connect();
 
     socket.on('trendData', (data) => {
+      isLoading = false;
       if (data.error) {
         console.error(data.error);
         return;
@@ -85,7 +88,6 @@
     fetchWeatherData();
   });
 </script>
-
 
 <center>
   <style>
@@ -115,14 +117,14 @@
     }
 
     #station-select, #date-input {
-  padding: 8px 12px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  width: 40%;
-  box-sizing: border-box;
-  margin: 0 auto;
-}
+      padding: 8px 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      width: 40%;
+      box-sizing: border-box;
+      margin: 0 auto;
+    }
 
     button {
       margin-top: 10px;
@@ -137,6 +139,17 @@
 
     button:hover {
       background-color: #0056b3;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .loading i {
+      margin-right: 10px;
     }
   </style>
 
@@ -156,61 +169,68 @@
     </div>
     <button on:click={fetchWeatherData}>Søk</button>
     
-    {#if weatherData.length > 0}
-<p></p>
-<div style="overflow-x:auto;">
-  <table style="width: 100%; border-collapse: collapse;">
-    <tr>
-      <th style="width: 50%; text-align: left; padding-right: 10px;">Høyeste vindkast denne dagen</th>
-      <td style="width: 50%; text-align: left;">{maxGust} m/s</td>
-    </tr>
-    <tr>
-      <th style="width: 50%; text-align: left; padding-right: 10px;">Høyeste middelvind</th>
-      <td style="width: 50%; text-align: left;">{maxAverageWindspeed} m/s</td>
-    </tr>
-    <tr>
-      <th style="width: 50%; text-align: left; padding-right: 10px;">Nedbør denne dagen</th>
-      <td style="width: 50%; text-align: left;">{dailyRainfall} mm/24t</td>
-    </tr>
-  </table>
-</div>
-
-<p></p>
-      <div style="overflow-x:auto;">
-        <table>
-          <thead>
-            <tr>
-              <th>Tid</th>
-              <th>Temp. (°C)</th>
-              <th>Trykk (hPa)</th>
-              <th>Fukt (%)</th>
-              <th>Vind</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each weatherData as item}
-            <tr>
-              <td>{formatTime(item.time)}</td>
-              <td>{Number(item.temperature).toFixed(1)}</td>
-              <td>{Number(item.barometer).toFixed(1)}</td>
-              <td>{Number(item.outdoor_humidity).toFixed(1)}</td>
-              <td>
-                <img src={windArrow} alt="Vindretning" style="transform: rotate({item.wind_direction}deg); width: 30px; height: 30px;">
-              </td>
-            </tr>
-            {/each}
-          </tbody>
-        </table>
+    {#if isLoading}
+      <div class="loading">
+        <i class="fas fa-spinner fa-spin" aria-hidden="true"></i>
+        <span>Laster inn værdata...</span>
       </div>
     {:else}
-      <p>Ingen data tilgjengelig for valgt dato.</p>
+      {#if weatherData.length > 0}
+        <p></p>
+        <div style="overflow-x:auto;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+              <th style="width: 50%; text-align: left; padding-right: 10px;">Høyeste vindkast denne dagen</th>
+              <td style="width: 50%; text-align: left;">{maxGust} m/s</td>
+            </tr>
+            <tr>
+              <th style="width: 50%; text-align: left; padding-right: 10px;">Høyeste middelvind</th>
+              <td style="width: 50%; text-align: left;">{maxAverageWindspeed} m/s</td>
+            </tr>
+            <tr>
+              <th style="width: 50%; text-align: left; padding-right: 10px;">Nedbør denne dagen</th>
+              <td style="width: 50%; text-align: left;">{dailyRainfall} mm/24t</td>
+            </tr>
+          </table>
+        </div>
+
+        <p></p>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Tid</th>
+                <th>Temp. (°C)</th>
+                <th>Trykk (hPa)</th>
+                <th>Fukt (%)</th>
+                <th>Vind</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#each weatherData as item}
+              <tr>
+                <td>{formatTime(item.time)}</td>
+                <td>{Number(item.temperature).toFixed(1)}</td>
+                <td>{Number(item.barometer).toFixed(1)}</td>
+                <td>{Number(item.outdoor_humidity).toFixed(1)}</td>
+                <td>
+                  <img src={windArrow} alt="Vindretning" style="transform: rotate({item.wind_direction}deg); width: 30px; height: 30px;">
+                </td>
+              </tr>
+              {/each}
+            </tbody>
+          </table>
+        </div>
+      {:else}
+        <p>Ingen data tilgjengelig for valgt dato.</p>
+      {/if}
     {/if}
   </div>
 </center>
 
 <svelte:head>
-	<title>Datosøk</title>
-	<meta name="description" content="Datosøk på været som har vært" />
+  <title>Datosøk</title>
+  <meta name="description" content="Datosøk på været som har vært" />
   <meta name="keywords" content="Været som har vært på Skodje, Været som har vært på Håhjem, Været som har vært på Longva, Været i Ålesund, Flemsøy, Skuløy, Skodje, Ålesund, Haram, Været på Sunnmøre, Vind Sunnmøre">
   <meta name="author" content="Longvastøl Data">
 </svelte:head>

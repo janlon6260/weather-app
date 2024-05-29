@@ -208,7 +208,6 @@
   <TrendPopup {selectedLocation} {selectedType} {trendData} onClose={handleClosePopup} />
 {/if}
 
-
 <style>
   section {
     display: flex;
@@ -243,5 +242,27 @@
   .loading i {
     font-size: 2rem;
     margin-bottom: 1rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+
+  th {
+    background-color: #f2f2f2;
+  }
+
+  td.currwind {
+    width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>
