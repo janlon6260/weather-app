@@ -2,10 +2,10 @@
 	import EmailReveal from './EmailReveal.svelte';
   </script>
 <svelte:head>
-	<title>Om</title>
+	<title>Om denne siden</title>
 	<meta name="description" content="Om denne værsiden" />
 </svelte:head>
-
+<h1>Om denne siden</h1>
 <center>
 <b>Værstasjon Skodje:</b>
 <br>Davis Vantage Vue  (85 moh.), 7 meter over terrenget

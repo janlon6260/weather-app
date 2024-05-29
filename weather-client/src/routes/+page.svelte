@@ -186,7 +186,7 @@
 
 <WeatherAlerts />
 
-<div class=toptext>Klikk på verdiene for å vise trend de siste 24 timene.</div>
+<div class="toptext">Klikk på verdiene for å vise trend de siste 24 timene.</div>
 <section>
   {#if loaded}
     <div in:fade={{ duration: 500 }} class="weather-card mt-4">
@@ -208,11 +208,11 @@
   <TrendPopup {selectedLocation} {selectedType} {trendData} onClose={handleClosePopup} />
 {/if}
 
+
 <style>
   section {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
     flex: 0.6;
   }

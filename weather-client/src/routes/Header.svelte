@@ -20,10 +20,10 @@
 				<a href="/">Forside</a>
 			</li>
 			<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
-				<a href="/about">Info</a>
+				<a href="/about">Om</a>
 			</li>
 			<li aria-current={$page.url.pathname === '/searchdate' ? 'page' : undefined}>
-				<a href="/searchdate">Datosøk</a>
+				<a href="/searchdate">Værhistorikk</a>
 			</li>
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
@@ -52,12 +52,6 @@
 		justify-content: center;
 		width: 100%;
 		height: 100%;
-	}
-
-	.corner img {
-		width: 2em;
-		height: 2em;
-		object-fit: contain;
 	}
 
 	nav {
