@@ -105,7 +105,7 @@ function getSocketHandlers(socket, data) {
 
             const convertedRows = rows.map(row => ({
                 ...row,
-                value: type === 'currwind' ? row.value * 0.277778 : row.value
+                value: (type === 'currwind' || type === 'gustwind') ? row.value * 0.277778 : row.value
             }));
 
             socket.emit('trendData', { station, type, data: convertedRows });
