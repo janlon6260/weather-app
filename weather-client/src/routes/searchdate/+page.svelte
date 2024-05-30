@@ -3,7 +3,7 @@
   import { io } from 'socket.io-client';
   import { format } from 'date-fns';
   import { nb } from 'date-fns/locale';
-  import windArrow from '$lib/images/0.svg'; // Import the wind arrow image
+  import windArrow from '$lib/images/0.svg';
 
   let selectedDate = getYesterdayDate();
   let selectedStation = 'Skodje';
@@ -70,21 +70,20 @@
         console.error(data.error);
         return;
       }
-      
-      console.log('Received data:', data);  // Log received data
 
-      const filteredData = filterHourlyData(data.data);
+      const hourlyData = filterHourlyData(data.data);
 
-      weatherData = filteredData.map(item => ({
+      weatherData = hourlyData.map(item => ({
         ...item,
-        daily_rainfall: item.daily_rainfall.toFixed(1) // Fixed to one decimal place
+        daily_rainfall: parseFloat(item.daily_rainfall).toFixed(1)
       }));
 
-      maxGust = data.maxGust;
-      dailyRainfall = data.dailyRainfall;
-      maxAverageWindspeed = data.data.length > 0 ? (data.data[0].max_average_windspeed_day * 0.277778).toFixed(1) : 0;  // Extracting and converting max_average_windspeed_day
+      maxGust = parseFloat(data.maxGust);
+      dailyRainfall = parseFloat(data.dailyRainfall);
+      maxAverageWindspeed = parseFloat(data.maxAverageWindspeed);
+      maxRainRate = parseFloat(data.maxRainRate);
     });
-    
+
     fetchWeatherData();
   });
 </script>

@@ -56,16 +56,39 @@ function getSocketHandlers(socket, data) {
                 `SELECT daily_rainfall FROM wx_data WHERE DATE(date) = ? AND HOUR(time) = 23 ORDER BY time DESC LIMIT 1`,
                 [date]
             );
+            const [maxAverageWindspeedRow] = await connection.execute(
+                `SELECT MAX(max_average_windspeed_day) AS max_average_windspeed_day 
+                FROM wx_data 
+                WHERE DATE(date) = ?`,
+                [date]
+            );
+            const [maxRainRateRow] = await connection.execute(
+                `SELECT MAX(max_rain_rate_curent_day) AS max_rain_rate_curent_day 
+                FROM wx_data 
+                WHERE DATE(date) = ?`,
+                [date]
+            );
             await connection.end();
 
             const maxGust = maxGustRow.length > 0 ? maxGustRow[0].max_gust_current_day : 0;
             const dailyRainfall = dailyRainfallRow.length > 0 ? dailyRainfallRow[0].daily_rainfall : 0;
+            const maxAverageWindspeed = maxAverageWindspeedRow.length > 0 ? maxAverageWindspeedRow[0].max_average_windspeed_day : 0;
+            const maxRainRate = maxRainRateRow.length > 0 ? maxRainRateRow[0].max_rain_rate_curent_day : 0;
+
+            console.log('Socket Database results:', {
+                maxGustRaw: maxGust,
+                dailyRainfallRaw: dailyRainfall,
+                maxAverageWindspeedRaw: maxAverageWindspeed,
+                maxRainRateRaw: maxRainRate
+            });
 
             socket.emit('trendData', {
                 station,
                 data: rows,
                 maxGust: (maxGust * 0.277778).toFixed(1),
-                dailyRainfall: dailyRainfall.toFixed(1)
+                dailyRainfall: dailyRainfall.toFixed(1),
+                maxAverageWindspeed: (maxAverageWindspeed * 0.277778).toFixed(1),
+                maxRainRate: maxRainRate.toFixed(1)
             });
         } catch (error) {
             console.error(`Error querying data for ${station}: ${error.message}`);

@@ -13,6 +13,7 @@ router.post('/', async (req, res) => {
 
     try {
         const connection = await mysql.createConnection(dbConfig);
+
         const [rows] = await connection.execute(
             `SELECT 
                 *,
@@ -61,19 +62,21 @@ router.post('/', async (req, res) => {
 
         const convertedRows = rows.map(row => ({
             ...row,
-            max_gust_current_day: (row.max_gust_current_day * 0.277778).toFixed(1),  // Convert to m/s
-            max_average_windspeed_day: (row.max_average_windspeed_day * 0.277778).toFixed(1),  // Convert to m/s
+            max_gust_current_day: (row.max_gust_current_day * 0.277778).toFixed(1),
+            max_average_windspeed_day: (row.max_average_windspeed_day * 0.277778).toFixed(1),
             daily_rainfall: row.daily_rainfall.toFixed(1)
         }));
 
-        res.json({
+        const response = {
             station,
             data: convertedRows,
-            maxGust: (maxGust * 0.277778).toFixed(1),  // Convert to m/s
+            maxGust: (maxGust * 0.277778).toFixed(1),
             dailyRainfall: dailyRainfall.toFixed(1),
-            maxAverageWindspeed: (maxAverageWindspeed * 0.277778).toFixed(1),  // Convert to m/s
+            maxAverageWindspeed: (maxAverageWindspeed * 0.277778).toFixed(1),
             maxRainRate: maxRainRate.toFixed(1)
-        });
+        };
+
+        res.json(response);
     } catch (error) {
         console.error(`Error querying data for ${station}: ${error.message}`);
         res.status(500).json({ error: 'Error querying data' });
