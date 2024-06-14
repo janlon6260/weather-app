@@ -48,8 +48,7 @@
       case 'avalanche':
         return 'fas fa-snowflake';
       case 'rainFlood':
-        return 'fas fa-cloud-showers-heavy';
-
+        return 'fas fa-cloud-showers-heavy'; // Icon for heavy rain
       default:
         return 'fas fa-exclamation-triangle';
     }
@@ -79,14 +78,17 @@
 
   .yellow-alert {
     border: 2px solid yellow;
+    background-color: rgba(255, 255, 0, 0.08);
   }
 
   .orange-alert {
     border: 2px solid orange;
+    background-color: rgba(255, 165, 0, 0.08);
   }
 
   .red-alert {
     border: 2px solid red;
+    background-color: rgba(255, 0, 0, 0.08);
   }
 
   .alert-header {
