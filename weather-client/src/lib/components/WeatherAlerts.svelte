@@ -47,6 +47,8 @@
         return 'fas fa-wind';
       case 'avalanche':
         return 'fas fa-snowflake';
+      case 'rainFlood':
+        return 'fas fa-cloud-showers-heavy';
 
       default:
         return 'fas fa-exclamation-triangle';
@@ -91,7 +93,7 @@
     margin: 0;
     display: flex;
     align-items: center;
-    line-height: var(--line-height-header, 1.2); /* Adjust line height for header */
+    line-height: var(--line-height-header, 1.2);
   }
 
   .alert-header i {
@@ -100,7 +102,7 @@
 
   .alert-content {
     margin-top: 5px;
-    line-height: var(--line-height-content, 1.4); /* Adjust line height for content */
+    line-height: var(--line-height-content, 1.4);
   }
 
   @media (max-width: 600px) {
