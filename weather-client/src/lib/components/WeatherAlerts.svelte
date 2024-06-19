@@ -48,7 +48,9 @@
       case 'avalanche':
         return 'fas fa-snowflake';
       case 'rainFlood':
-        return 'fas fa-cloud-showers-heavy'; // Icon for heavy rain
+        return 'fas fa-cloud-showers-heavy';
+      case 'wind':
+        return 'fas fa-wind';
       default:
         return 'fas fa-exclamation-triangle';
     }
