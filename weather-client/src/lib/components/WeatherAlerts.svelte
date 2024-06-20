@@ -119,7 +119,7 @@
   .alert-header .toggle-text {
     margin-left: auto;
     font-weight: normal;
-    font-size: 0.8rem;
+    font-size: 1.0rem;
   }
 
   .alert-details {
@@ -133,7 +133,7 @@
 
   @media (max-width: 600px) {
     .alert-box {
-      width: 90%;
+      width: 100%;
     }
   }
 </style>

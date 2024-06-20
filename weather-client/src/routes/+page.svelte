@@ -266,6 +266,7 @@
 
     .weather-card {
       width: 100%;
+      margin-left: 20px;
     }
   }
 </style>
