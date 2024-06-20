@@ -236,11 +236,10 @@
     margin-bottom: 1rem;
   }
 
-  /* Style for the table */
   .parameter-box table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed; /* Ensures the table has a fixed layout */
+    table-layout: fixed;
   }
 
   .parameter-box th, .parameter-box td {
@@ -249,7 +248,7 @@
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* Ensures text will be truncated with ellipsis */
+    text-overflow: ellipsis;
   }
 
   .parameter-box th {
@@ -257,6 +256,16 @@
   }
 
   .parameter-box td.currwind {
-    width: 250px; /* Set fixed width */
+    width: 250px;
+  }
+
+  @media (max-width: 768px) {
+    section {
+      align-items: flex-start;
+    }
+
+    .weather-card {
+      width: 100%;
+    }
   }
 </style>

@@ -116,9 +116,10 @@
     margin-right: 10px;
   }
 
-  .alert-header span {
+  .alert-header .toggle-text {
     margin-left: auto;
     font-weight: normal;
+    font-size: 0.8rem;
   }
 
   .alert-details {
@@ -148,7 +149,7 @@
         <h3 class="alert-header" on:click={() => toggleAlert(index)}>
           <i class="{getIcon(alert.properties.event)}"></i>
           {alert.properties.eventAwarenessName}
-          <span style="font-weight: normal; margin-left: auto;">{alert.expanded ? 'Vis mindre' : 'Vis mer'}</span>
+          <span class="toggle-text">{alert.expanded ? 'Vis mindre' : 'Vis mer'}</span>
         </h3>
         <div class="alert-details">
           <b>Grad:</b> {getSeverityLabel(alert.properties.severity)}
