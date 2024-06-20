@@ -100,6 +100,7 @@
     border-radius: 3px;
     box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
     overflow: hidden;
+    cursor: pointer; /* Add cursor pointer for better UX */
   }
 
   .yellow-alert {
@@ -122,7 +123,6 @@
     display: flex;
     align-items: center;
     line-height: var(--line-height-header, 1.2);
-    cursor: pointer;
   }
 
   .alert-header i {
@@ -159,8 +159,8 @@
 {#if alerts.length > 0}
   <div class="alerts-wrapper">
     {#each alerts as alert, index (alert.id)}
-      <div class="alert-box {getSeverityClass(alert.properties.severity)}">
-        <h3 class="alert-header" on:click={() => toggleAlert(index)}>
+      <div class="alert-box {getSeverityClass(alert.properties.severity)}" on:click={() => toggleAlert(index)}>
+        <h3 class="alert-header">
           <i class="{getIcon(alert.properties.event)}"></i>
           {alert.properties.eventAwarenessName}
           <span class="toggle-text">{alert.expanded ? 'Vis mindre' : 'Vis mer'}</span>
