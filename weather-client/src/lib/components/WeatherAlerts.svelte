@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { fly } from 'svelte/transition';
+  import { slide } from 'svelte/transition';
 
   let alerts = [];
 
@@ -169,7 +169,7 @@
           <b>Grad:</b> {getSeverityLabel(alert.properties.severity)}
         </div>
         {#if alert.expanded}
-          <div class="alert-content" transition:fly>
+          <div class="alert-content" transition:slide>
             <br><b>Beskrivelse:</b> {alert.properties.description}
             <div style="margin-top: 10px;">
               {#if alert.when && alert.when.interval}
