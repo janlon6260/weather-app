@@ -1,5 +1,11 @@
 <script>
   import WeatherAlerts from './../lib/components/WeatherAlerts.svelte';
+  import Parameter from '$lib/components/Parameter.svelte';
+  import TrendPopup from '$lib/components/TrendPopup.svelte';
+  import { onMount } from 'svelte';
+  import { io } from 'socket.io-client';
+  import weatherData from '$lib/objects/weather-data';
+  import { fade } from 'svelte/transition';
 
   import BF0 from '$lib/images/0.svg';
   import BF1 from '$lib/images/1.svg';
@@ -14,12 +20,6 @@
   import BF10 from '$lib/images/10.svg';
   import BF11 from '$lib/images/11.svg';
   import BF12 from '$lib/images/12.svg';
-  import { onMount } from 'svelte';
-  import { io } from 'socket.io-client';
-  import weatherData from '$lib/objects/weather-data';
-  import { fade } from 'svelte/transition';
-  import Parameter from '$lib/components/Parameter.svelte';
-  import TrendPopup from '$lib/components/TrendPopup.svelte';
 
   function extractNumber(str) {
     return parseInt(str.replace(/\D/g, ''), 10);
@@ -75,11 +75,10 @@
     socket.connect();
 
     socket.on('connect_error', (err) => {
-      // console.log(`connect_error due to ${err.message}`);
+      console.error(`connect_error due to ${err.message}`);
     });
 
     socket.on('file-content', (data) => {
-      // console.log('Received file-content:', data);
       loaded = true;
       for (const location in data) {
         for (const key in data[location]) {
@@ -89,28 +88,21 @@
     });
 
     socket.on('trendData', (data) => {
-      // console.log('Received trendData:', data);
       if (data.station === selectedLocation && data.type === selectedType) {
         trendData = data.data;
-        // console.log('Updated trendData:', trendData);
-      } else {
-        // console.log('trendData did not match the selected location and type');
       }
     });
   });
 
   function handleFetchTrend(event) {
     const { location, type } = event.detail;
-    // console.log('Fetching trend for location:', location, 'and type:', type);
     selectedLocation = location;
     selectedType = type;
     showPopup = true;
     socket.emit('fetch24HourTrend', { station: location, type });
-    // console.log('fetch24HourTrend event emitted');
   }
 
   function handleClosePopup() {
-    // console.log('Closing popup');
     showPopup = false;
   }
 
@@ -244,25 +236,27 @@
     margin-bottom: 1rem;
   }
 
-  table {
+  /* Style for the table */
+  .parameter-box table {
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed; /* Ensures the table has a fixed layout */
   }
 
-  th, td {
+  .parameter-box th, .parameter-box td {
     padding: 8px 12px;
     border: 1px solid #ddd;
     text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Ensures text will be truncated with ellipsis */
   }
 
-  th {
+  .parameter-box th {
     background-color: #f2f2f2;
   }
 
-  td.currwind {
-    width: 150px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  .parameter-box td.currwind {
+    width: 250px; /* Set fixed width */
   }
 </style>

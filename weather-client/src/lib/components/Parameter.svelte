@@ -49,12 +49,18 @@
       <div class="data-row {className === 'currwind' ? 'currwind-row' : ''}">
         <span class="location">{location}:</span>
         {#if imgSrc}
-          <span class="{className} data-value {isOlderThanXMinutes(date) ? 'old-data' : ''}" on:click={() => handleClick(location, className)}>
+          <span
+            class="{className} data-value {isOlderThanXMinutes(date) ? 'old-data' : ''}"
+            role="button"
+            tabindex="0"
+            on:click={() => handleClick(location, className)}
+            on:keydown={(e) => e.key === 'Enter' && handleClick(location, className)}
+          >
             <div class="wind-container">
               <img
                 class="wind-icon"
                 src="{imgSrc}"
-                alt="SVG Image"
+                alt="{description}"
                 style="transform: rotate({bearing}deg);"
               >
               <b class="description">{description}</b>
@@ -62,7 +68,15 @@
             <b class="value">{value}</b>
           </span>
         {:else}
-          <span class="{className} data-value {isOlderThanXMinutes(date) ? 'old-data' : ''}" on:click={() => handleClick(location, className)}><b>{value}</b></span>
+          <span
+            class="{className} data-value {isOlderThanXMinutes(date) ? 'old-data' : ''}"
+            role="button"
+            tabindex="0"
+            on:click={() => handleClick(location, className)}
+            on:keydown={(e) => e.key === 'Enter' && handleClick(location, className)}
+          >
+            <b>{value}</b>
+          </span>
         {/if}
       </div>
     {/each}
@@ -82,8 +96,8 @@
 }
 
 .icon-and-label i {
-    margin-right: 0.5rem;
-  }
+  margin-right: 0.5rem;
+}
 
 .data-grid {
   display: flex;
@@ -95,6 +109,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  width: 100px;
 }
 
 .currwind-row {
@@ -150,17 +165,6 @@
   white-space: nowrap;
 }
 
-.currwind .data-value {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  cursor: pointer;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .old-data {
   color: red;
 }
@@ -170,4 +174,24 @@
   white-space: nowrap;
 }
 
+.parameter-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.parameter-box table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.parameter-box th, .parameter-box td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.parameter-box th {
+  background-color: #f2f2f2;
+}
 </style>

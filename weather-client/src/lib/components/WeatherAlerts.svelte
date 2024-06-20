@@ -1,5 +1,6 @@
 <script>
   import { onMount } from 'svelte';
+  import { fly } from 'svelte/transition';
 
   let alerts = [];
 
@@ -7,7 +8,7 @@
     const response = await fetch('https://api.met.no/weatherapi/metalerts/2.0/current.json?lat=62.50488&lon=6.69015');
     if (response.ok) {
       const data = await response.json();
-      alerts = data.features;
+      alerts = data.features.map(alert => ({ ...alert, expanded: false })); // Initialize expanded property
     }
   });
 
@@ -55,6 +56,15 @@
         return 'fas fa-exclamation-triangle';
     }
   }
+
+  function toggleAlert(index) {
+    alerts = alerts.map((alert, i) => {
+      if (i === index) {
+        return { ...alert, expanded: !alert.expanded };
+      }
+      return alert;
+    });
+  }
 </script>
 
 <style>
@@ -76,6 +86,7 @@
     background-color: rgba(255, 255, 255, 0.45);
     border-radius: 3px;
     box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
+    overflow: hidden;
   }
 
   .yellow-alert {
@@ -98,15 +109,25 @@
     display: flex;
     align-items: center;
     line-height: var(--line-height-header, 1.2);
+    cursor: pointer;
   }
 
   .alert-header i {
     margin-right: 10px;
   }
 
-  .alert-content {
+  .alert-header span {
+    margin-left: auto;
+    font-weight: normal;
+  }
+
+  .alert-details {
     margin-top: 5px;
     line-height: var(--line-height-content, 1.4);
+  }
+
+  .alert-content {
+    overflow: hidden;
   }
 
   @media (max-width: 600px) {
@@ -122,20 +143,25 @@
 
 {#if alerts.length > 0}
   <div class="alerts-wrapper">
-    {#each alerts as alert (alert.id)}
+    {#each alerts as alert, index (alert.id)}
       <div class="alert-box {getSeverityClass(alert.properties.severity)}">
-        <h3 class="alert-header">
+        <h3 class="alert-header" on:click={() => toggleAlert(index)}>
           <i class="{getIcon(alert.properties.event)}"></i>
           {alert.properties.eventAwarenessName}
+          <span style="font-weight: normal; margin-left: auto;">{alert.expanded ? 'Vis mindre' : 'Vis mer'}</span>
         </h3>
-        <div class="alert-content">
+        <div class="alert-details">
           <b>Grad:</b> {getSeverityLabel(alert.properties.severity)}
-          {#if alert.properties.when && alert.properties.when.interval}
-            <br><b>Start:</b> {new Date(alert.properties.when.interval[0]).toLocaleString('no-NO')}
-            <br><b>Slutt:</b> {new Date(alert.properties.when.interval[1]).toLocaleString('no-NO')}
-          {/if}
-          <br><b>Beskrivelse:</b> {alert.properties.description}
         </div>
+        {#if alert.expanded}
+          <div class="alert-content" transition:fly>
+            {#if alert.properties.when && alert.properties.when.interval}
+              <br><b>Start:</b> {new Date(alert.properties.when.interval[0]).toLocaleString('no-NO')}
+              <br><b>Slutt:</b> {new Date(alert.properties.when.interval[1]).toLocaleString('no-NO')}
+            {/if}
+            <br><b>Beskrivelse:</b> {alert.properties.description}
+          </div>
+        {/if}
       </div>
     {/each}
   </div>
