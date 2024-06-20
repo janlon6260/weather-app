@@ -8,7 +8,7 @@
     const response = await fetch('https://api.met.no/weatherapi/metalerts/2.0/current.json?lat=62.50488&lon=6.69015');
     if (response.ok) {
       const data = await response.json();
-      alerts = data.features.map(alert => ({ ...alert, expanded: false })); // Initialize expanded property
+      alerts = data.features.map(alert => ({ ...alert, expanded: false }));
     }
   });
 
@@ -64,6 +64,19 @@
       }
       return alert;
     });
+  }
+
+  function formatDateTime(dateTime) {
+    const options = {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    };
+    const formattedDateTime = new Date(dateTime).toLocaleString('no-NO', options).replace(',', ' klokken');
+    return formattedDateTime;
   }
 </script>
 
@@ -129,6 +142,7 @@
 
   .alert-content {
     overflow: hidden;
+    margin-top: 10px;
   }
 
   @media (max-width: 600px) {
@@ -156,11 +170,13 @@
         </div>
         {#if alert.expanded}
           <div class="alert-content" transition:fly>
-            {#if alert.properties.when && alert.properties.when.interval}
-              <br><b>Start:</b> {new Date(alert.properties.when.interval[0]).toLocaleString('no-NO')}
-              <br><b>Slutt:</b> {new Date(alert.properties.when.interval[1]).toLocaleString('no-NO')}
-            {/if}
             <br><b>Beskrivelse:</b> {alert.properties.description}
+            <div style="margin-top: 10px;">
+              {#if alert.when && alert.when.interval}
+                <br><b>Gjelder fra:</b> {formatDateTime(alert.when.interval[0])}
+                <br><b>Gjelder til:</b> {formatDateTime(alert.when.interval[1])}
+              {/if}
+            </div>
           </div>
         {/if}
       </div>
