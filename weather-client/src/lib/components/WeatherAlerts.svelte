@@ -133,7 +133,7 @@
 
   @media (max-width: 600px) {
     .alert-box {
-      width: 100%;
+      width: 90%;
     }
   }
 </style>
