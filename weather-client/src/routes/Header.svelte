@@ -19,9 +19,9 @@
 			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
 				<a href="/">Været nå</a>
 			</li>
-			<li aria-current={$page.url.pathname === '/watertemp' ? 'page' : undefined}>
+<!-- 			<li aria-current={$page.url.pathname === '/watertemp' ? 'page' : undefined}>
 				<a href="/">Badetemperaturer</a>
-			</li>
+			</li> -->
 			<li aria-current={$page.url.pathname === '/searchdate' ? 'page' : undefined}>
 				<a href="/searchdate">Været som har vært</a>
 			</li>
