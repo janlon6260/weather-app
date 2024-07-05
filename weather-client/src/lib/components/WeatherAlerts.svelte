@@ -49,6 +49,7 @@
       case 'avalanche':
         return 'fas fa-snowflake';
       case 'rainFlood':
+      case 'rain':
         return 'fas fa-cloud-showers-heavy';
       case 'wind':
         return 'fas fa-wind';
@@ -100,7 +101,7 @@
     border-radius: 3px;
     box-shadow: 2px 2px 6px rgb(255 255 255 / 25%);
     overflow: hidden;
-    cursor: pointer; /* Add cursor pointer for better UX */
+    cursor: pointer;
   }
 
   .yellow-alert {

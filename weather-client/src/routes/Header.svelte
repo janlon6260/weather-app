@@ -17,13 +17,16 @@
 		</svg>
 		<ul>
 			<li aria-current={$page.url.pathname === '/' ? 'page' : undefined}>
-				<a href="/">Forside</a>
+				<a href="/">Været nå</a>
+			</li>
+			<li aria-current={$page.url.pathname === '/watertemp' ? 'page' : undefined}>
+				<a href="/">Badetemperaturer</a>
+			</li>
+			<li aria-current={$page.url.pathname === '/searchdate' ? 'page' : undefined}>
+				<a href="/searchdate">Været som har vært</a>
 			</li>
 			<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
 				<a href="/about">Om</a>
-			</li>
-			<li aria-current={$page.url.pathname === '/searchdate' ? 'page' : undefined}>
-				<a href="/searchdate">Værhistorikk</a>
 			</li>
 		</ul>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
