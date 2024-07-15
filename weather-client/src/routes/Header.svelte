@@ -23,7 +23,7 @@
 				<a href="/">Badetemperaturer</a>
 			</li> -->
 			<li aria-current={$page.url.pathname === '/searchdate' ? 'page' : undefined}>
-				<a href="/searchdate">Været som har vært</a>
+				<a href="/searchdate">Datosøk</a>
 			</li>
 			<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
 				<a href="/about">Om</a>

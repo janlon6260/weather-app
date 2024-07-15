@@ -8,7 +8,7 @@
     const response = await fetch('https://api.met.no/weatherapi/metalerts/2.0/current.json?lat=62.50488&lon=6.69015');
     if (response.ok) {
       const data = await response.json();
-      alerts = data.features.map(alert => ({ ...alert, expanded: false }));
+      alerts = data.features.map((alert, index) => ({ ...alert, id: alert.id || index, expanded: false }));
     }
   });
 
@@ -53,6 +53,8 @@
         return 'fas fa-cloud-showers-heavy';
       case 'wind':
         return 'fas fa-wind';
+      case 'lightning':
+        return 'fas fa-bolt';
       default:
         return 'fas fa-exclamation-triangle';
     }
