@@ -5,7 +5,7 @@
   import { onMount } from 'svelte';
   import { io } from 'socket.io-client';
   import weatherData from '$lib/objects/weather-data';
-  import { fade } from 'svelte/transition';
+  import { fade, slide } from 'svelte/transition';
 
   import BF0 from '$lib/images/0.svg';
   import BF1 from '$lib/images/1.svg';
@@ -166,6 +166,37 @@
       ]
     }
   ];
+
+
+  let isExpanded = false;
+
+function toggleExpand() {
+  isExpanded = !isExpanded;
+}
+
+$: hasIssues = skodjeIsDown || hahjemIsDown || longvaIsDown;
+
+function isStationDown(dateStr) {
+  if (!dateStr) return true;
+  
+  const now = new Date();
+  const [hours, minutes] = dateStr.split(':').map(Number);
+  const date = new Date();
+  date.setHours(hours, minutes, 0, 0);
+  
+  const diffSeconds = (now - date) / 1000;
+
+  if (diffSeconds > 60 && diffSeconds <= 300) {
+    return 'orange';
+  }
+
+  return diffSeconds > 300;
+}
+
+
+$: skodjeIsDown = isStationDown(weather.Skodje.date);
+$: hahjemIsDown = isStationDown(weather.Hahjem.date);
+$: longvaIsDown = isStationDown(weather.Flemsoy.date);
 </script>
 
 <svelte:head>
@@ -176,9 +207,42 @@
   <meta name="author" content="Longvastøl Data">
 </svelte:head>
 
+<div class="status-line" on:click={toggleExpand}>
+  <span>Status værstasjoner:</span>
+  <span class="{hasIssues ? 'red-circle' : 'green-circle'}"></span>
+  <span>{hasIssues ? 'Problemer' : 'OK'}</span>
+  <span class="toggle-text">{isExpanded ? 'Vis mindre' : 'Vis mer'}</span>
+</div>
+
+{#if isExpanded}
+<div class="station-status-list" transition:slide>
+  <div class="station">
+    <span>Skodje:</span>
+    <span class="{skodjeIsDown === 'red' ? 'red-circle' : (skodjeIsDown === 'orange' ? 'orange-circle' : 'green-circle')}"></span>
+    <span>{skodjeIsDown === 'red' ? 'Nede' : (skodjeIsDown === 'orange' ? 'Midlertidig utilgjengelig' : 'OK')}</span>
+    <span> - Siste oppdatering: {weather.Skodje.date}</span>
+  </div>
+  
+  <div class="station">
+    <span>Håhjem:</span>
+    <span class="{hahjemIsDown === 'red' ? 'red-circle' : (hahjemIsDown === 'orange' ? 'orange-circle' : 'green-circle')}"></span>
+    <span>{hahjemIsDown === 'red' ? 'Nede' : (hahjemIsDown === 'orange' ? 'Midlertidig utilgjengelig' : 'OK')}</span>
+    <span> - Siste oppdatering: {weather.Hahjem.date}</span>
+  </div>
+  
+  <div class="station">
+    <span>Longva:</span>
+    <span class="{longvaIsDown === 'red' ? 'red-circle' : (longvaIsDown === 'orange' ? 'orange-circle' : 'green-circle')}"></span>
+    <span>{longvaIsDown === 'red' ? 'Nede' : (longvaIsDown === 'orange' ? 'Midlertidig utilgjengelig' : 'OK')}</span>
+    <span> - Siste oppdatering: {weather.Flemsoy.date}</span>
+  </div>
+  </div>
+{/if}
+
 <WeatherAlerts />
 
-<div class="toptext">Klikk på verdiene for å vise trend de siste 24 timene.</div>
+<div class="toptext {isExpanded ? 'expanded' : ''}">Klikk på verdiene for å vise trend de siste 24 timene.</div>
+
 <section>
   {#if loaded}
     <div in:fade={{ duration: 500 }} class="weather-card mt-4">
@@ -201,6 +265,59 @@
 {/if}
 
 <style>
+
+.status-line {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 1rem;
+    margin: 1rem 0;
+    font-family: var(--font-body);
+    color: var(--color-text);
+}
+
+.status-line .toggle-text {
+    font-size: 0.85rem;
+}
+
+.status-line span {
+    font-family: inherit;
+}
+
+.orange-circle {
+  background-color: orange;
+}
+
+  .toggle-text {
+  font-size: 0.9rem;
+}
+  .station-status-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    margin-top: 0.5rem;
+    font-family: var(--font-body);
+    color: var(--color-text); 
+  }
+
+  .green-circle, .red-circle {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .green-circle {
+    background-color: green;
+  }
+
+  .red-circle {
+    background-color: red;
+  }
+
   section {
     display: flex;
     flex-direction: column;
@@ -219,7 +336,12 @@
     align-items: center;
     flex-direction: column;
     padding-bottom: 1.0rem;
-  }
+    margin-top: 0rem;
+}
+
+.toptext.expanded {
+    margin-top: 1rem;
+}
 
   .loading {
     display: flex;
