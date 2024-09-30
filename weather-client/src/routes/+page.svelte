@@ -174,10 +174,10 @@ function toggleExpand() {
   isExpanded = !isExpanded;
 }
 
-$: hasIssues = skodjeIsDown || hahjemIsDown || longvaIsDown;
+$: hasIssues = skodjeIsDown === 'red' || hahjemIsDown === 'red' || longvaIsDown === 'red';
 
 function isStationDown(dateStr) {
-  if (!dateStr) return true;
+  if (!dateStr) return 'red';
   
   const now = new Date();
   const [hours, minutes] = dateStr.split(':').map(Number);
@@ -186,13 +186,14 @@ function isStationDown(dateStr) {
   
   const diffSeconds = (now - date) / 1000;
 
-  if (diffSeconds > 60 && diffSeconds <= 300) {
+  if (diffSeconds <= 60) {
+    return 'green';
+  } else if (diffSeconds <= 300) {
     return 'orange';
+  } else {
+    return 'red';
   }
-
-  return diffSeconds > 300;
 }
-
 
 $: skodjeIsDown = isStationDown(weather.Skodje.date);
 $: hahjemIsDown = isStationDown(weather.Hahjem.date);

@@ -3,6 +3,26 @@ const { urls: weatherStations } = require('../weather-stations.js');
 const dbConfigs = require('./dbConfigs');
 const mysql = require('mysql2/promise');
 
+const CHECK_INTERVAL_SECONDS = 60;
+const STALE_THRESHOLD_SECONDS = 300;
+
+function getStationStatus(dateStr) {
+    if (!dateStr) return 'red';
+
+    const now = new Date();
+    const [hours, minutes] = dateStr.split(':').map(Number);
+    const lastUpdate = new Date();
+    lastUpdate.setHours(hours, minutes, 0, 0);
+
+    const diffSeconds = (now - lastUpdate) / 1000;
+
+    if (diffSeconds > CHECK_INTERVAL_SECONDS && diffSeconds <= STALE_THRESHOLD_SECONDS) {
+        return 'orange';
+    }
+
+    return diffSeconds > STALE_THRESHOLD_SECONDS ? 'red' : 'green';
+}
+
 async function fetchWeatherData(data, io) {
     for (const [name, url] of Object.entries(weatherStations)) {
         try {
@@ -11,7 +31,8 @@ async function fetchWeatherData(data, io) {
 
             const enrichedData = {
                 ...newData,
-                date: newData.date || new Date().toLocaleTimeString().slice(11, 16)
+                date: newData.date || new Date().toLocaleTimeString().slice(11, 16),
+                status: getStationStatus(newData.date)
             };
 
             if (!data[name]) {
