@@ -99,7 +99,6 @@
     });
   });
 
-  // Oppdaterer status basert på backend-data
   function updateStationStatus() {
     skodjeIsDown = weather.Skodje.status;
     hahjemIsDown = weather.Hahjem.status;
@@ -341,4 +340,11 @@
     font-size: 2rem;
     margin-bottom: 1rem;
   }
+  @media (max-width: 768px) {
+  .parameter-box {
+    align-items: flex-start;
+    padding-right: 100px;
+  }
+}
+
 </style>

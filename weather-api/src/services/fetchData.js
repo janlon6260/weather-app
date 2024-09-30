@@ -3,10 +3,9 @@ const { urls: weatherStations } = require('../weather-stations.js');
 const dbConfigs = require('./dbConfigs');
 const mysql = require('mysql2/promise');
 
-const CHECK_INTERVAL_SECONDS = 120; // Tid i sekunder for hvor lenge vi tolererer ingen oppdateringer
-const STALE_THRESHOLD_SECONDS = 300; // Tid i sekunder for å anse stasjonene som nede
+const CHECK_INTERVAL_SECONDS = 120;
+const STALE_THRESHOLD_SECONDS = 300;
 
-// Funksjon for å beregne statusen til en værstasjon basert på når siste oppdatering kom inn
 function getStationStatus(dateStr) {
     if (!dateStr) return 'red';
 
@@ -17,15 +16,18 @@ function getStationStatus(dateStr) {
 
     const diffSeconds = (now - lastUpdate) / 1000;
 
-    // Returgrenseverdier: OK inntil 120 sekunder, Midlertidig utilgjengelig inntil 5 minutter
     if (diffSeconds <= CHECK_INTERVAL_SECONDS) {
-        return 'green'; // OK innen 120 sekunder
+        return 'green';
     } else if (diffSeconds <= STALE_THRESHOLD_SECONDS) {
-        return 'orange'; // Midlertidig utilgjengelig (1-5 minutter)
+        return 'orange';
     } else {
-        return 'red'; // Nede (over 5 minutter)
+        return 'red';
     }
 }
+
+const isDataValid = (data) => {
+    return data && Object.values(data).every(value => value !== null && value !== '' && value !== undefined);
+};
 
 async function fetchWeatherData(data, io) {
     for (const [name, url] of Object.entries(weatherStations)) {
@@ -33,26 +35,47 @@ async function fetchWeatherData(data, io) {
             const response = await axios.get(url);
             const newData = response.data;
 
-            const enrichedData = {
-                ...newData,
-                date: newData.date || new Date().toLocaleTimeString().slice(11, 16),
-                status: getStationStatus(newData.date) // Legg til status på værdataene
-            };
+            if (!data[name]?.lastInvalidTime) {
+                data[name] = { ...data[name], lastInvalidTime: null };
+            }
+
+            const isInvalidData = !newData.date || Object.values(newData).some(value => value === null || value === '');
+
+            if (isInvalidData) {
+                if (!data[name].lastInvalidTime) {
+                    data[name].lastInvalidTime = new Date();
+                }
+                
+                const diffSeconds = (new Date() - new Date(data[name].lastInvalidTime)) / 1000;
+
+                if (diffSeconds > STALE_THRESHOLD_SECONDS) {
+                    newData.status = 'red'; 
+                } else if (diffSeconds > CHECK_INTERVAL_SECONDS) {
+                    newData.status = 'orange'; 
+                } else {
+                    newData.status = 'green';
+                }
+
+            } else {
+                data[name].lastInvalidTime = null;
+                newData.status = getStationStatus(newData.date);
+            }
+
+            newData.date = newData.date || new Date().toLocaleTimeString().slice(0, 5);
 
             if (!data[name]) {
-                data[name] = enrichedData;
-                io.sockets.emit('file-content', { [name]: enrichedData });
+                data[name] = newData;
+                io.sockets.emit('file-content', { [name]: newData });
             } else {
                 const changedValues = {};
-
-                for (const key in enrichedData) {
-                    if (enrichedData[key] !== data[name][key]) {
-                        changedValues[key] = enrichedData[key];
+                for (const key in newData) {
+                    if (newData[key] !== data[name][key]) {
+                        changedValues[key] = newData[key];
                     }
                 }
 
                 if (Object.keys(changedValues).length > 0) {
-                    data[name] = enrichedData;
+                    data[name] = newData;
                     io.sockets.emit('file-content', { [name]: changedValues });
                 }
             }
@@ -99,13 +122,6 @@ function getSocketHandlers(socket, data) {
             const dailyRainfall = dailyRainfallRow.length > 0 ? dailyRainfallRow[0].daily_rainfall : 0;
             const maxAverageWindspeed = maxAverageWindspeedRow.length > 0 ? maxAverageWindspeedRow[0].max_average_windspeed_day : 0;
             const maxRainRate = maxRainRateRow.length > 0 ? maxRainRateRow[0].max_rain_rate_curent_day : 0;
-
-            console.log('Socket Database results:', {
-                maxGustRaw: maxGust,
-                dailyRainfallRaw: dailyRainfall,
-                maxAverageWindspeedRaw: maxAverageWindspeed,
-                maxRainRateRaw: maxRainRate
-            });
 
             socket.emit('trendData', {
                 station,
