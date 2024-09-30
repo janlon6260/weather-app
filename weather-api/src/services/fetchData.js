@@ -3,36 +3,48 @@ const { urls: weatherStations } = require('../weather-stations.js');
 const dbConfigs = require('./dbConfigs');
 const mysql = require('mysql2/promise');
 
-const CHECK_INTERVAL_SECONDS = 60;
+const CHECK_INTERVAL_SECONDS = 180;
 const STALE_THRESHOLD_SECONDS = 300;
 
-function getStationStatus(dateStr) {
-    if (!dateStr) return 'red';
-
+function getStationStatus(dateStr, lastValidDate) {
     const now = new Date();
+
+    if (!dateStr) {
+        const diffSecondsSinceNull = (now - lastValidDate) / 1000;
+        return diffSecondsSinceNull <= CHECK_INTERVAL_SECONDS ? 'green' : 'red';
+    }
+
     const [hours, minutes] = dateStr.split(':').map(Number);
     const lastUpdate = new Date();
     lastUpdate.setHours(hours, minutes, 0, 0);
 
     const diffSeconds = (now - lastUpdate) / 1000;
 
-    if (diffSeconds > CHECK_INTERVAL_SECONDS && diffSeconds <= STALE_THRESHOLD_SECONDS) {
+    if (diffSeconds <= CHECK_INTERVAL_SECONDS) {
+        return 'green';
+    } else if (diffSeconds <= STALE_THRESHOLD_SECONDS) {
         return 'orange';
+    } else {
+        return 'red';
     }
-
-    return diffSeconds > STALE_THRESHOLD_SECONDS ? 'red' : 'green';
 }
 
 async function fetchWeatherData(data, io) {
+    const now = new Date();
+
     for (const [name, url] of Object.entries(weatherStations)) {
         try {
             const response = await axios.get(url);
             const newData = response.data;
 
+            if (newData.date) {
+                data[name] = { ...data[name], lastValidDate: new Date() };
+            }
+
             const enrichedData = {
                 ...newData,
-                date: newData.date || new Date().toLocaleTimeString().slice(11, 16),
-                status: getStationStatus(newData.date)
+                date: newData.date || data[name]?.date || new Date().toLocaleTimeString().slice(0, 5),
+                status: getStationStatus(newData.date, data[name]?.lastValidDate || now)
             };
 
             if (!data[name]) {
