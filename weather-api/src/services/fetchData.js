@@ -4,10 +4,10 @@ const dbConfigs = require('./dbConfigs');
 const mysql = require('mysql2/promise');
 
 const CHECK_INTERVAL_SECONDS = 120;
-const STALE_THRESHOLD_SECONDS = 300; 
+const STALE_THRESHOLD_SECONDS = 300;
 
 function getStationStatus(dateStr) {
-    if (!dateStr) return 'red'; 
+    if (!dateStr) return 'red';
 
     const now = new Date();
     const [hours, minutes] = dateStr.split(':').map(Number);
@@ -15,7 +15,6 @@ function getStationStatus(dateStr) {
     lastUpdate.setHours(hours, minutes, 0, 0);
 
     const diffSeconds = (now - lastUpdate) / 1000;
-
 
     if (diffSeconds > STALE_THRESHOLD_SECONDS) {
         return 'red';
@@ -50,15 +49,11 @@ async function fetchWeatherData(data, io) {
 
                     if (diffSeconds > STALE_THRESHOLD_SECONDS) {
                         data[name].status = 'red';
-                    } else if (diffSeconds > CHECK_INTERVAL_SECONDS) {
-                        data[name].status = 'orange';
                     } else {
                         data[name].status = 'green';
                     }
                 }
             } else {
-                if (data[name].lastInvalidTime) {
-                }
                 data[name].lastInvalidTime = null;
                 data[name].status = 'green';
             }
@@ -69,12 +64,12 @@ async function fetchWeatherData(data, io) {
                 lastUpdateTime.setHours(hours, minutes, 0, 0);
             }
             const diffTime = (new Date() - lastUpdateTime) / 1000;
-            if (diffTime <= CHECK_INTERVAL_SECONDS) {
-                data[name].status = 'green';
-            } else if (diffTime <= STALE_THRESHOLD_SECONDS) {
+            if (diffTime > STALE_THRESHOLD_SECONDS) {
+                data[name].status = 'red';
+            } else if (diffTime > CHECK_INTERVAL_SECONDS) {
                 data[name].status = 'orange';
             } else {
-                data[name].status = 'red';
+                data[name].status = 'green';
             }
 
             data[name].date = newData.date || new Date().toLocaleTimeString().slice(0, 5);

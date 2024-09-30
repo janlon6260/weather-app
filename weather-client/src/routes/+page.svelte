@@ -153,18 +153,18 @@
       icon: "fas fa-cloud-showers-heavy",
       label: "Nedbør nå (totalt i dag):",
       data: [
-        { location: "Skodje", class: "rain", value: `${weather.Skodje.rrate} mm/t (${weather.Skodje.rfall} mm)`, date: weather.Skodje.date, isLast: false },
-        { location: "Håhjem", class: "rain", value: `${weather.Hahjem.rrate} mm/t (${weather.Hahjem.rfall} mm)`, date: weather.Hahjem.date, isLast: false },
-        { location: "Longva", class: "rain", value: `${weather.Flemsoy.rrate} mm/t (${weather.Flemsoy.rfall} mm)`, date: weather.Flemsoy.date, isLast: true }
+        { location: "Skodje", class: "rain", value: `${weather.Skodje.rrate} mm/t (${weather.Skodje.rfall} mm )`, date: weather.Skodje.date, isLast: false },
+        { location: "Håhjem", class: "rain", value: `${weather.Hahjem.rrate} mm/t (${weather.Hahjem.rfall} mm )`, date: weather.Hahjem.date, isLast: false },
+        { location: "Longva", class: "rain", value: `${weather.Flemsoy.rrate} mm/t (${weather.Flemsoy.rfall} mm )`, date: weather.Flemsoy.date, isLast: true }
       ]
     },
     {
       icon: "fas fa-wind",
       label: "Sanntid vind nå (middelvind):",
       data: [
-        { location: "Skodje", class: "currwind", description: beaufortDescriptions[extractNumber(weather.Skodje.beaufort)], value: `${weather.Skodje.wlatest} (${weather.Skodje.wspeed}) m/s`, imgSrc: currentbSkodje, bearing: weather.Skodje.bearing, date: weather.Skodje.date, isLast: false },
-        { location: "Håhjem", class: "currwind", description: beaufortDescriptions[extractNumber(weather.Hahjem.beaufort)], value: `${weather.Hahjem.wlatest} (${weather.Hahjem.wspeed}) m/s`, imgSrc: currentbHahjem, bearing: weather.Hahjem.bearing, date: weather.Hahjem.date, isLast: false },
-        { location: "Longva", class: "currwind", description: beaufortDescriptions[extractNumber(weather.Flemsoy.beaufort)], value: `${weather.Flemsoy.wlatest} (${weather.Flemsoy.wspeed}) m/s`, imgSrc: currentbFlemsoy, bearing: weather.Flemsoy.bearing, date: weather.Flemsoy.date, isLast: true }
+        { location: "Skodje", class: "currwind", description: beaufortDescriptions[extractNumber(weather.Skodje.beaufort)], value: `${weather.Skodje.wlatest} ( ${weather.Skodje.wspeed} ) m/s`, imgSrc: currentbSkodje, bearing: weather.Skodje.bearing, date: weather.Skodje.date, isLast: false },
+        { location: "Håhjem", class: "currwind", description: beaufortDescriptions[extractNumber(weather.Hahjem.beaufort)], value: `${weather.Hahjem.wlatest} ( ${weather.Hahjem.wspeed} ) m/s`, imgSrc: currentbHahjem, bearing: weather.Hahjem.bearing, date: weather.Hahjem.date, isLast: false },
+        { location: "Longva", class: "currwind", description: beaufortDescriptions[extractNumber(weather.Flemsoy.beaufort)], value: `${weather.Flemsoy.wlatest} ( ${weather.Flemsoy.wspeed} ) m/s`, imgSrc: currentbFlemsoy, bearing: weather.Flemsoy.bearing, date: weather.Flemsoy.date, isLast: true }
       ]
     },
     {
