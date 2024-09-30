@@ -70,6 +70,10 @@
   let showPopup = false;
   let trendData = [];
 
+  let skodjeIsDown = 'green';
+  let hahjemIsDown = 'green';
+  let longvaIsDown = 'green';
+
   onMount(() => {
     socket = io(import.meta.env.VITE_API_URL, { autoConnect: false });
     socket.connect();
@@ -85,6 +89,7 @@
           weather[location][key] = data[location][key];
         }
       }
+      updateStationStatus();
     });
 
     socket.on('trendData', (data) => {
@@ -93,6 +98,13 @@
       }
     });
   });
+
+  // Oppdaterer status basert på backend-data
+  function updateStationStatus() {
+    skodjeIsDown = weather.Skodje.status;
+    hahjemIsDown = weather.Hahjem.status;
+    longvaIsDown = weather.Flemsoy.status;
+  }
 
   function handleFetchTrend(event) {
     const { location, type } = event.detail;
@@ -167,37 +179,17 @@
     }
   ];
 
-
   let isExpanded = false;
 
-function toggleExpand() {
-  isExpanded = !isExpanded;
-}
-
-$: hasIssues = skodjeIsDown === 'red' || hahjemIsDown === 'red' || longvaIsDown === 'red';
-
-function isStationDown(dateStr) {
-  if (!dateStr) return 'red';
-  
-  const now = new Date();
-  const [hours, minutes] = dateStr.split(':').map(Number);
-  const date = new Date();
-  date.setHours(hours, minutes, 0, 0);
-  
-  const diffSeconds = (now - date) / 1000;
-
-  if (diffSeconds <= 60) {
-    return 'green';
-  } else if (diffSeconds <= 300) {
-    return 'orange';
-  } else {
-    return 'red';
+  function toggleExpand() {
+    isExpanded = !isExpanded;
   }
-}
 
-$: skodjeIsDown = isStationDown(weather.Skodje.date);
-$: hahjemIsDown = isStationDown(weather.Hahjem.date);
-$: longvaIsDown = isStationDown(weather.Flemsoy.date);
+  $: hasIssues = skodjeIsDown === 'red' || hahjemIsDown === 'red' || longvaIsDown === 'red';
+  $: hasTemporaryIssues = skodjeIsDown === 'orange' || hahjemIsDown === 'orange' || longvaIsDown === 'orange';
+
+
+
 </script>
 
 <svelte:head>
@@ -210,8 +202,8 @@ $: longvaIsDown = isStationDown(weather.Flemsoy.date);
 
 <div class="status-line" on:click={toggleExpand}>
   <span>Status værstasjoner:</span>
-  <span class="{hasIssues ? 'red-circle' : 'green-circle'}"></span>
-  <span>{hasIssues ? 'Problemer' : 'OK'}</span>
+  <span class="{hasIssues ? 'red-circle' : (hasTemporaryIssues ? 'orange-circle' : 'green-circle')}"></span>
+  <span>{hasIssues ? 'Problemer' : (hasTemporaryIssues ? 'OK' : 'OK')}</span>
   <span class="toggle-text">{isExpanded ? 'Vis mindre' : 'Vis mer'}</span>
 </div>
 
@@ -237,7 +229,7 @@ $: longvaIsDown = isStationDown(weather.Flemsoy.date);
     <span>{longvaIsDown === 'red' ? 'Nede' : (longvaIsDown === 'orange' ? 'Midlertidig utilgjengelig' : 'OK')}</span>
     <span> - Siste oppdatering: {weather.Flemsoy.date}</span>
   </div>
-  </div>
+</div>
 {/if}
 
 <WeatherAlerts />
@@ -266,8 +258,7 @@ $: longvaIsDown = isStationDown(weather.Flemsoy.date);
 {/if}
 
 <style>
-
-.status-line {
+  .status-line {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -277,38 +268,20 @@ $: longvaIsDown = isStationDown(weather.Flemsoy.date);
     margin: 1rem 0;
     font-family: var(--font-body);
     color: var(--color-text);
-}
-
-.status-line .toggle-text {
-    font-size: 0.85rem;
-}
-
-.status-line span {
-    font-family: inherit;
-}
-
-.orange-circle {
-  background-color: orange;
-}
-
-  .toggle-text {
-  font-size: 0.9rem;
-}
-  .station-status-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.9rem;
-    margin-top: 0.5rem;
-    font-family: var(--font-body);
-    color: var(--color-text); 
   }
 
-  .green-circle, .red-circle {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-block;
+  .status-line .toggle-text {
+    font-size: 0.85rem;
+  }
+
+  .green-circle, .red-circle, .orange-circle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+  .orange-circle {
+    background-color: orange;
   }
 
   .green-circle {
@@ -317,6 +290,16 @@ $: longvaIsDown = isStationDown(weather.Flemsoy.date);
 
   .red-circle {
     background-color: red;
+  }
+
+  .station-status-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.9rem;
+    margin-top: 0.5rem;
+    font-family: var(--font-body);
+    color: var(--color-text);
   }
 
   section {
@@ -338,11 +321,11 @@ $: longvaIsDown = isStationDown(weather.Flemsoy.date);
     flex-direction: column;
     padding-bottom: 1.0rem;
     margin-top: 0rem;
-}
+  }
 
-.toptext.expanded {
+  .toptext.expanded {
     margin-top: 1rem;
-}
+  }
 
   .loading {
     display: flex;
@@ -357,39 +340,5 @@ $: longvaIsDown = isStationDown(weather.Flemsoy.date);
   .loading i {
     font-size: 2rem;
     margin-bottom: 1rem;
-  }
-
-  .parameter-box table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-  }
-
-  .parameter-box th, .parameter-box td {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    text-align: left;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .parameter-box th {
-    background-color: #f2f2f2;
-  }
-
-  .parameter-box td.currwind {
-    width: 250px;
-  }
-
-  @media (max-width: 768px) {
-    section {
-      align-items: flex-start;
-    }
-
-    .weather-card {
-      width: 100%;
-      margin-left: 20px;
-    }
   }
 </style>
