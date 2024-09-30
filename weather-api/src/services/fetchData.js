@@ -4,10 +4,10 @@ const dbConfigs = require('./dbConfigs');
 const mysql = require('mysql2/promise');
 
 const CHECK_INTERVAL_SECONDS = 120;
-const STALE_THRESHOLD_SECONDS = 300;
+const STALE_THRESHOLD_SECONDS = 300; 
 
 function getStationStatus(dateStr) {
-    if (!dateStr) return 'red';
+    if (!dateStr) return 'red'; 
 
     const now = new Date();
     const [hours, minutes] = dateStr.split(':').map(Number);
@@ -16,18 +16,15 @@ function getStationStatus(dateStr) {
 
     const diffSeconds = (now - lastUpdate) / 1000;
 
-    if (diffSeconds <= CHECK_INTERVAL_SECONDS) {
-        return 'green';
-    } else if (diffSeconds <= STALE_THRESHOLD_SECONDS) {
+
+    if (diffSeconds > STALE_THRESHOLD_SECONDS) {
+        return 'red';
+    } else if (diffSeconds > CHECK_INTERVAL_SECONDS) {
         return 'orange';
     } else {
-        return 'red';
+        return 'green';
     }
 }
-
-const isDataValid = (data) => {
-    return data && Object.values(data).every(value => value !== null && value !== '' && value !== undefined);
-};
 
 async function fetchWeatherData(data, io) {
     for (const [name, url] of Object.entries(weatherStations)) {
@@ -35,8 +32,12 @@ async function fetchWeatherData(data, io) {
             const response = await axios.get(url);
             const newData = response.data;
 
-            if (!data[name]?.lastInvalidTime) {
-                data[name] = { ...data[name], lastInvalidTime: null };
+            if (!data[name]) {
+                data[name] = { ...newData, lastInvalidTime: null };
+            } else {
+                for (const key in newData) {
+                    data[name][key] = newData[key];
+                }
             }
 
             const isInvalidData = !newData.date || Object.values(newData).some(value => value === null || value === '');
@@ -44,41 +45,42 @@ async function fetchWeatherData(data, io) {
             if (isInvalidData) {
                 if (!data[name].lastInvalidTime) {
                     data[name].lastInvalidTime = new Date();
-                }
-                
-                const diffSeconds = (new Date() - new Date(data[name].lastInvalidTime)) / 1000;
-
-                if (diffSeconds > STALE_THRESHOLD_SECONDS) {
-                    newData.status = 'red'; 
-                } else if (diffSeconds > CHECK_INTERVAL_SECONDS) {
-                    newData.status = 'orange'; 
                 } else {
-                    newData.status = 'green';
-                }
+                    const diffSeconds = (new Date() - data[name].lastInvalidTime) / 1000;
 
-            } else {
-                data[name].lastInvalidTime = null;
-                newData.status = getStationStatus(newData.date);
-            }
-
-            newData.date = newData.date || new Date().toLocaleTimeString().slice(0, 5);
-
-            if (!data[name]) {
-                data[name] = newData;
-                io.sockets.emit('file-content', { [name]: newData });
-            } else {
-                const changedValues = {};
-                for (const key in newData) {
-                    if (newData[key] !== data[name][key]) {
-                        changedValues[key] = newData[key];
+                    if (diffSeconds > STALE_THRESHOLD_SECONDS) {
+                        data[name].status = 'red';
+                    } else if (diffSeconds > CHECK_INTERVAL_SECONDS) {
+                        data[name].status = 'orange';
+                    } else {
+                        data[name].status = 'green';
                     }
                 }
-
-                if (Object.keys(changedValues).length > 0) {
-                    data[name] = newData;
-                    io.sockets.emit('file-content', { [name]: changedValues });
+            } else {
+                if (data[name].lastInvalidTime) {
                 }
+                data[name].lastInvalidTime = null;
+                data[name].status = 'green';
             }
+
+            const lastUpdateTime = new Date();
+            const [hours, minutes] = (newData.date || '').split(':').map(Number);
+            if (!isNaN(hours) && !isNaN(minutes)) {
+                lastUpdateTime.setHours(hours, minutes, 0, 0);
+            }
+            const diffTime = (new Date() - lastUpdateTime) / 1000;
+            if (diffTime <= CHECK_INTERVAL_SECONDS) {
+                data[name].status = 'green';
+            } else if (diffTime <= STALE_THRESHOLD_SECONDS) {
+                data[name].status = 'orange';
+            } else {
+                data[name].status = 'red';
+            }
+
+            data[name].date = newData.date || new Date().toLocaleTimeString().slice(0, 5);
+
+            io.sockets.emit('file-content', { [name]: data[name] });
+
         } catch (error) {
             console.error(`Error fetching data for ${name}: ${error.message}`);
         }
