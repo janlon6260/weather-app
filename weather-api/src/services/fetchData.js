@@ -6,25 +6,6 @@ const mysql = require('mysql2/promise');
 const CHECK_INTERVAL_SECONDS = 120;
 const STALE_THRESHOLD_SECONDS = 300;
 
-function getStationStatus(dateStr) {
-    if (!dateStr) return 'red';
-
-    const now = new Date();
-    const [hours, minutes] = dateStr.split(':').map(Number);
-    const lastUpdate = new Date();
-    lastUpdate.setHours(hours, minutes, 0, 0);
-
-    const diffSeconds = (now - lastUpdate) / 1000;
-
-    if (diffSeconds > STALE_THRESHOLD_SECONDS) {
-        return 'red';
-    } else if (diffSeconds > CHECK_INTERVAL_SECONDS) {
-        return 'orange';
-    } else {
-        return 'green';
-    }
-}
-
 async function fetchWeatherData(data, io) {
     for (const [name, url] of Object.entries(weatherStations)) {
         try {
@@ -32,11 +13,7 @@ async function fetchWeatherData(data, io) {
             const newData = response.data;
 
             if (!data[name]) {
-                data[name] = { ...newData, lastInvalidTime: null };
-            } else {
-                for (const key in newData) {
-                    data[name][key] = newData[key];
-                }
+                data[name] = { ...newData, lastInvalidTime: null, lastValidTime: null };
             }
 
             const isInvalidData = !newData.date || Object.values(newData).some(value => value === null || value === '');
@@ -44,40 +21,81 @@ async function fetchWeatherData(data, io) {
             if (isInvalidData) {
                 if (!data[name].lastInvalidTime) {
                     data[name].lastInvalidTime = new Date();
-                } else {
-                    const diffSeconds = (new Date() - data[name].lastInvalidTime) / 1000;
-
-                    if (diffSeconds > STALE_THRESHOLD_SECONDS) {
-                        data[name].status = 'red';
-                    } else {
-                        data[name].status = 'green';
-                    }
                 }
+
+                const diffSeconds = (new Date() - data[name].lastValidTime) / 1000;
+
+                if (diffSeconds > STALE_THRESHOLD_SECONDS) {
+                    data[name].status = 'red';
+                } else if (diffSeconds > CHECK_INTERVAL_SECONDS) {
+                    data[name].status = 'orange';
+                } else {
+                    data[name].status = 'green';
+                }
+
             } else {
                 data[name].lastInvalidTime = null;
-                data[name].status = 'green';
-            }
 
-            const lastUpdateTime = new Date();
-            const [hours, minutes] = (newData.date || '').split(':').map(Number);
-            if (!isNaN(hours) && !isNaN(minutes)) {
-                lastUpdateTime.setHours(hours, minutes, 0, 0);
-            }
-            const diffTime = (new Date() - lastUpdateTime) / 1000;
-            if (diffTime > STALE_THRESHOLD_SECONDS) {
-                data[name].status = 'red';
-            } else if (diffTime > CHECK_INTERVAL_SECONDS) {
-                data[name].status = 'orange';
-            } else {
-                data[name].status = 'green';
-            }
+                for (const key in newData) {
+                    data[name][key] = newData[key];
+                }
 
-            data[name].date = newData.date || new Date().toLocaleTimeString().slice(0, 5);
+                data[name].date = newData.date;
+
+                let lastValidTime = new Date();
+                const [hours, minutes] = (newData.date || '').split(':').map(Number);
+                if (!isNaN(hours) && !isNaN(minutes)) {
+                    lastValidTime.setHours(hours, minutes, 0, 0);
+                } else {
+                    lastValidTime = new Date();
+                }
+
+                let diffSeconds = (new Date() - lastValidTime) / 1000;
+                if (diffSeconds < -CHECK_INTERVAL_SECONDS || diffSeconds > STALE_THRESHOLD_SECONDS * 2) {
+                    lastValidTime = new Date();
+                    diffSeconds = 0;
+                }
+
+                data[name].lastValidTime = lastValidTime;
+
+                if (diffSeconds > STALE_THRESHOLD_SECONDS) {
+                    data[name].status = 'red';
+                } else if (diffSeconds > CHECK_INTERVAL_SECONDS) {
+                    data[name].status = 'orange';
+                } else {
+                    data[name].status = 'green';
+                }
+            }
 
             io.sockets.emit('file-content', { [name]: data[name] });
 
         } catch (error) {
             console.error(`Error fetching data for ${name}: ${error.message}`);
+
+            if (!data[name]) {
+                data[name] = {
+                    lastInvalidTime: new Date(),
+                    lastValidTime: null,
+                    status: 'red',
+                    date: null
+                };
+            } else {
+                if (!data[name].lastInvalidTime) {
+                    data[name].lastInvalidTime = new Date();
+                }
+
+                const diffSeconds = data[name].lastValidTime ? (new Date() - data[name].lastValidTime) / 1000 : STALE_THRESHOLD_SECONDS + 1;
+
+                if (diffSeconds > STALE_THRESHOLD_SECONDS) {
+                    data[name].status = 'red';
+                } else if (diffSeconds > CHECK_INTERVAL_SECONDS) {
+                    data[name].status = 'orange';
+                } else {
+                    data[name].status = 'green';
+                }
+            }
+
+            io.sockets.emit('file-content', { [name]: data[name] });
         }
     }
 }
