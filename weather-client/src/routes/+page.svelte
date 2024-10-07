@@ -153,9 +153,9 @@
       icon: "fas fa-cloud-showers-heavy",
       label: "Nedbør nå (totalt i dag):",
       data: [
-        { location: "Skodje", class: "rain", value: `${weather.Skodje.rrate} mm/t (${weather.Skodje.rfall} mm )`, date: weather.Skodje.date, isLast: false },
-        { location: "Håhjem", class: "rain", value: `${weather.Hahjem.rrate} mm/t (${weather.Hahjem.rfall} mm )`, date: weather.Hahjem.date, isLast: false },
-        { location: "Longva", class: "rain", value: `${weather.Flemsoy.rrate} mm/t (${weather.Flemsoy.rfall} mm )`, date: weather.Flemsoy.date, isLast: true }
+        { location: "Skodje", class: "daily_rainfall", value: `${weather.Skodje.rrate} mm/t (${weather.Skodje.rfall} mm )`, date: weather.Skodje.date, isLast: false },
+        { location: "Håhjem", class: "daily_rainfall", value: `${weather.Hahjem.rrate} mm/t (${weather.Hahjem.rfall} mm )`, date: weather.Hahjem.date, isLast: false },
+        { location: "Longva", class: "daily_rainfall", value: `${weather.Flemsoy.rrate} mm/t (${weather.Flemsoy.rfall} mm )`, date: weather.Flemsoy.date, isLast: true }
       ]
     },
     {
@@ -195,7 +195,7 @@
   <title>Været på Sunnmøre</title>
   <meta name="description" content="Været på Sunnmøre" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <meta name="keywords" content="Været på Skodje, Været på Håhjem, Været på Longva, Været i Ålesund, Flemsøy, Skuløy, Skodje, Ålesund, Haram, Været på Sunnmøre, Vind Sunnmøre">
+  <meta name="keywords" content="Været på Skodje, Været på Håhjem, Været på Longva, Været i Ålesund, Flemsøy, Skuløy, Skodje, Ålesund, Haram, Været på Sunnmøre, Vind Sunnmøre, Været på Skuløya/Flemsøya, Været på Skuløya, Været på Flemsøya, Været på Nordøyane, Longva, Flem, Haramsøy, Lepsøy, Fjørtoft, Været i Haram, Nordøyane, Vind Haram, Vind Sunnmøre">
   <meta name="author" content="Longvastøl Data">
 </svelte:head>
 

@@ -6,6 +6,7 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 const { fetchWeatherData, getSocketHandlers } = require('./services/fetchData');
 const fetch24HourTrendRoute = require('./routes/fetch24HourTrend');
+const fetch24HourTrendLastYearRoute = require('./routes/fetch24HourTrendLastYear'); // Import the new route
 const searchByDateRoute = require('./routes/searchByDate');
 const confirmRoute = require('./routes/confirm');
 
@@ -21,11 +22,18 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 
+// Disable caching
+app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store');
+    next();
+});
+
 app.get('/', (req, res) => {
     res.send('Serving you fresh weather data throughout the day. Enjoy!');
 });
 
 app.use('/fetch24HourTrend', fetch24HourTrendRoute);
+app.use('/fetch24HourTrendLastYear', fetch24HourTrendLastYearRoute); // Register the new route
 app.use('/searchByDate', searchByDateRoute);
 app.use('/confirm', confirmRoute);
 
@@ -45,9 +53,3 @@ const port = process.env.PORT || 3000;
 server.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
-
-app.use((req, res, next) => {
-    res.set('Cache-Control', 'no-store');
-    next();
-  });
-  

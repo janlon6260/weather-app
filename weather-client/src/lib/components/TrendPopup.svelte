@@ -5,6 +5,8 @@
   import { nb } from 'date-fns/locale';
   Chart.register(...registerables);
 
+  const API_URL = import.meta.env.VITE_API_URL || '';
+
   export let selectedLocation;
   export let selectedType;
   export let trendData = [];
@@ -16,6 +18,11 @@
   let chartCanvas;
   let chart;
   let dataLoaded = false;
+
+  let showLastYear = false;
+  let trendDataLastYear = [];
+  let isFetchingLastYear = false;
+  let lastYearDataAvailable = true;
 
   function closePopup() {
     dispatch('close');
@@ -31,7 +38,7 @@
     rain: 'Nedbørstrend',
     daily_rainfall: 'Daglig nedbørstrend',
     currwind: 'Middelvindstrend',
-    gustwind: 'Vindkasttrend'
+    gustwind: 'Vindkasttrend',
   };
 
   const suffixMap = {
@@ -41,7 +48,7 @@
     rain: ' mm',
     daily_rainfall: ' mm',
     currwind: ' m/s',
-    gustwind: ' m/s'
+    gustwind: ' m/s',
   };
 
   function filterHourlyData(data) {
@@ -65,20 +72,42 @@
 
     const filteredTrendData = filterHourlyData(trendData);
 
+    const datasets = [
+      {
+        label: typeLabelMap[selectedType] || `${selectedType} trend`,
+        data: filteredTrendData.map((data) => ({
+          x: new Date(data.timestamp),
+          y: data.value,
+        })),
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        fill: false,
+        tension: 0.1,
+      },
+    ];
+
+    if (showLastYear && lastYearDataAvailable && trendDataLastYear.length > 0) {
+      const filteredTrendDataLastYear = filterHourlyData(trendDataLastYear);
+      datasets.push({
+        label: (typeLabelMap[selectedType] || `${selectedType} trend`) + ' (i fjor)',
+        data: filteredTrendDataLastYear.map((data) => {
+          let date = new Date(data.timestamp);
+          date.setFullYear(date.getFullYear() + 1);
+          return { x: date, y: data.value };
+        }),
+        borderColor: 'rgba(192, 75, 75, 1)',
+        backgroundColor: 'rgba(192, 75, 75, 0.2)',
+        fill: false,
+        tension: 0.1,
+      });
+    }
+
     if (filteredTrendData.length > 0 && chartCanvas) {
       const ctx = chartCanvas.getContext('2d');
       chart = new Chart(ctx, {
         type: 'line',
         data: {
-          labels: filteredTrendData.map(data => new Date(data.timestamp)),
-          datasets: [{
-            label: typeLabelMap[selectedType] || `${selectedType} trend`,
-            data: filteredTrendData.map(data => data.value),
-            borderColor: 'rgba(75, 192, 192, 1)',
-            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-            fill: false,
-            tension: 0.1
-          }]
+          datasets: datasets,
         },
         options: {
           responsive: true,
@@ -89,45 +118,74 @@
                 unit: 'hour',
                 tooltipFormat: 'HH:mm',
                 displayFormats: {
-                  hour: 'HH:mm'
-                }
+                  hour: 'HH:mm',
+                },
               },
               adapters: {
                 date: {
-                  locale: nb
-                }
+                  locale: nb,
+                },
               },
               title: {
                 display: false,
-                text: 'Tid'
-              }
+                text: 'Tid',
+              },
             },
             y: {
               title: {
                 display: false,
-                text: typeLabelMap[selectedType] || selectedType
+                text: typeLabelMap[selectedType] || selectedType,
               },
               ticks: {
-                callback: function(value) {
+                callback: function (value) {
                   return value + (suffixMap[selectedType] || '');
-                }
-              }
-            }
+                },
+              },
+            },
           },
           plugins: {
             tooltip: {
               callbacks: {
-                label: function(tooltipItem) {
+                label: function (tooltipItem) {
                   return tooltipItem.formattedValue + (suffixMap[selectedType] || '');
-                }
-              }
+                },
+              },
             },
             legend: {
-              display: false
-            }
-          }
-        }
+              display: datasets.length > 1,
+            },
+          },
+        },
       });
+    }
+  }
+
+  async function fetchLastYearData() {
+    isFetchingLastYear = true;
+    try {
+      const response = await fetch(`${API_URL}/fetch24HourTrendLastYear`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ station: selectedLocation, type: selectedType }),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        trendDataLastYear = result.data;
+        if (trendDataLastYear.length > 0) {
+          lastYearDataAvailable = true;
+        } else {
+          lastYearDataAvailable = false;
+        }
+        createChart();
+      } else {
+        console.error(result.error);
+        lastYearDataAvailable = false;
+      }
+    } catch (err) {
+      console.error(err);
+      lastYearDataAvailable = false;
+    } finally {
+      isFetchingLastYear = false;
     }
   }
 
@@ -146,6 +204,20 @@
     createChart();
   }
 
+  $: if (showLastYear) {
+    if (trendDataLastYear.length === 0 && !isFetchingLastYear && lastYearDataAvailable !== false) {
+      fetchLastYearData();
+    } else {
+      createChart();
+    }
+  } else {
+    if (trendDataLastYear.length > 0 || lastYearDataAvailable === false) {
+      trendDataLastYear = [];
+      lastYearDataAvailable = true;
+      createChart();
+    }
+  }
+
   onDestroy(() => {
     if (chart) {
       chart.destroy();
@@ -162,6 +234,17 @@
         <p>Ingen data tilgjengelig</p>
       {:else if trendData.length > 0}
         <canvas bind:this={chartCanvas} style="width: {chartWidth};"></canvas>
+        <div class="toggle-last-year">
+          <label>
+            <input type="checkbox" bind:checked={showLastYear}>
+            Vis samme periode i fjor
+          </label>
+        </div>
+        {#if showLastYear && !lastYearDataAvailable && !isFetchingLastYear}
+          <div class="no-data-message">
+            <p>Ingen data tilgjengelig for samme periode i fjor.</p>
+          </div>
+        {/if}
       {:else}
         <p>Ingen data tilgjengelig</p>
       {/if}
@@ -207,8 +290,18 @@
   }
 
   .title {
-  text-align: center;
-  margin-right: 20px;
-}
+    text-align: center;
+    margin-right: 20px;
+  }
 
+  .toggle-last-year {
+    margin-top: 1rem;
+    text-align: center;
+  }
+
+  .no-data-message {
+    margin-top: 1rem;
+    text-align: center;
+    color: red;
+  }
 </style>
