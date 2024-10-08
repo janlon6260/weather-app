@@ -233,7 +233,7 @@
 
 <WeatherAlerts />
 
-<div class="toptext {isExpanded ? 'expanded' : ''}">Klikk på verdiene for å vise trend de siste 24 timene.</div>
+<div class="toptext {isExpanded ? 'expanded' : ''}">Klikk på verdiene for å vise trend de siste 24 timene, og på samme tid i fjor.</div>
 
 <section>
   {#if loaded}

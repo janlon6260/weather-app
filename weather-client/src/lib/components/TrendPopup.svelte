@@ -24,6 +24,8 @@
   let isFetchingLastYear = false;
   let lastYearDataAvailable = true;
 
+  $: chartTitle = `${selectedLocation} - ${typeLabelMap[selectedType] || selectedType} siste 24t${showLastYear ? ' og samme tid i fjor' : ''}`;
+
   function closePopup() {
     dispatch('close');
     if (onClose) {
@@ -86,22 +88,6 @@
       },
     ];
 
-    if (showLastYear && lastYearDataAvailable && trendDataLastYear.length > 0) {
-      const filteredTrendDataLastYear = filterHourlyData(trendDataLastYear);
-      datasets.push({
-        label: (typeLabelMap[selectedType] || `${selectedType} trend`) + ' (i fjor)',
-        data: filteredTrendDataLastYear.map((data) => {
-          let date = new Date(data.timestamp);
-          date.setFullYear(date.getFullYear() + 1);
-          return { x: date, y: data.value };
-        }),
-        borderColor: 'rgba(192, 75, 75, 1)',
-        backgroundColor: 'rgba(192, 75, 75, 0.2)',
-        fill: false,
-        tension: 0.1,
-      });
-    }
-
     if (filteredTrendData.length > 0 && chartCanvas) {
       const ctx = chartCanvas.getContext('2d');
       chart = new Chart(ctx, {
@@ -158,6 +144,46 @@
         },
       });
     }
+
+    updateLastYearDataset();
+  }
+
+  function updateLastYearDataset() {
+    if (chart) {
+      const lastYearIndex = chart.data.datasets.findIndex(dataset => dataset.label.includes('(i fjor)'));
+      
+      if (showLastYear && lastYearDataAvailable && trendDataLastYear.length > 0) {
+        const filteredTrendDataLastYear = filterHourlyData(trendDataLastYear);
+
+        const lastYearAdjustedData = filteredTrendDataLastYear.map((data) => {
+          let lastYearDate = new Date(data.timestamp);
+          lastYearDate.setFullYear(new Date().getFullYear());
+          return {
+            x: lastYearDate,
+            y: data.value,
+          };
+        });
+
+        const lastYearDataset = {
+          label: (typeLabelMap[selectedType] || `${selectedType} trend`) + ' (i fjor)',
+          data: lastYearAdjustedData,
+          borderColor: 'rgba(192, 75, 75, 1)',
+          backgroundColor: 'rgba(192, 75, 75, 0.2)',
+          fill: false,
+          tension: 0.1,
+        };
+
+        if (lastYearIndex >= 0) {
+          chart.data.datasets[lastYearIndex] = lastYearDataset;
+        } else {
+          chart.data.datasets.push(lastYearDataset);
+        }
+      } else if (lastYearIndex >= 0) {
+        chart.data.datasets.splice(lastYearIndex, 1);
+      }
+
+      chart.update();
+    }
   }
 
   async function fetchLastYearData() {
@@ -169,14 +195,16 @@
         body: JSON.stringify({ station: selectedLocation, type: selectedType }),
       });
       const result = await response.json();
+
       if (response.ok) {
         trendDataLastYear = result.data;
+
         if (trendDataLastYear.length > 0) {
           lastYearDataAvailable = true;
         } else {
           lastYearDataAvailable = false;
         }
-        createChart();
+        updateLastYearDataset();
       } else {
         console.error(result.error);
         lastYearDataAvailable = false;
@@ -208,14 +236,10 @@
     if (trendDataLastYear.length === 0 && !isFetchingLastYear && lastYearDataAvailable !== false) {
       fetchLastYearData();
     } else {
-      createChart();
+      updateLastYearDataset();
     }
   } else {
-    if (trendDataLastYear.length > 0 || lastYearDataAvailable === false) {
-      trendDataLastYear = [];
-      lastYearDataAvailable = true;
-      createChart();
-    }
+    updateLastYearDataset();
   }
 
   onDestroy(() => {
@@ -227,7 +251,7 @@
 
 <div class="popup-overlay" on:click={closePopup}>
   <div class="popup" on:click|stopPropagation>
-    <h2 class="title"><b>{selectedLocation} - {typeLabelMap[selectedType] || selectedType} siste 24t</b></h2>
+    <h2 class="title"><b>{chartTitle}</b></h2>
     <button class="close-btn" on:click={closePopup}>X</button>
     <div class="trend-data">
       {#if error}
