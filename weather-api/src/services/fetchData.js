@@ -23,14 +23,16 @@ async function fetchWeatherData(data, io) {
                     data[name].lastInvalidTime = new Date();
                 }
 
-                const diffSeconds = data[name].lastValidTime ? (new Date() - data[name].lastValidTime) / 1000 : STALE_THRESHOLD_SECONDS + 1;
+                const diffSeconds = data[name].lastValidTime
+                    ? (new Date() - data[name].lastValidTime) / 1000
+                    : STALE_THRESHOLD_SECONDS + 1;
 
-                if (diffSeconds > 300) {
-                    data[name].status = 'red';
-                } else if (diffSeconds > 120) {
+                if (diffSeconds <= 120) {
+                    data[name].status = 'green';
+                } else if (diffSeconds <= 300) {
                     data[name].status = 'orange';
                 } else {
-                    data[name].status = 'green';
+                    data[name].status = 'red';
                 }
 
             } else {
@@ -44,6 +46,10 @@ async function fetchWeatherData(data, io) {
                 const [hours, minutes] = (newData.date || '').split(':').map(Number);
                 if (!isNaN(hours) && !isNaN(minutes)) {
                     lastValidTime.setHours(hours, minutes, 0, 0);
+                    // Sørg for at lastValidTime ikke er i fremtiden
+                    if (lastValidTime > new Date()) {
+                        lastValidTime.setDate(lastValidTime.getDate() - 1);
+                    }
                 } else {
                     lastValidTime = new Date();
                 }
@@ -52,12 +58,12 @@ async function fetchWeatherData(data, io) {
 
                 const diffSeconds = (new Date() - lastValidTime) / 1000;
 
-                if (diffSeconds < STALE_THRESHOLD_SECONDS) {
+                if (diffSeconds <= 120) {
                     data[name].status = 'green';
-                } else if (diffSeconds > 300) {
-                    data[name].status = 'red';
-                } else if (diffSeconds > 120) {
+                } else if (diffSeconds <= 300) {
                     data[name].status = 'orange';
+                } else {
+                    data[name].status = 'red';
                 }
             }
 
@@ -78,14 +84,16 @@ async function fetchWeatherData(data, io) {
                     data[name].lastInvalidTime = new Date();
                 }
 
-                const diffSeconds = data[name].lastValidTime ? (new Date() - data[name].lastValidTime) / 1000 : STALE_THRESHOLD_SECONDS + 1;
+                const diffSeconds = data[name].lastValidTime
+                    ? (new Date() - data[name].lastValidTime) / 1000
+                    : STALE_THRESHOLD_SECONDS + 1;
 
-                if (diffSeconds > 300) { 
-                    data[name].status = 'red';
-                } else if (diffSeconds > 120) {
+                if (diffSeconds <= 120) {
+                    data[name].status = 'green';
+                } else if (diffSeconds <= 300) {
                     data[name].status = 'orange';
                 } else {
-                    data[name].status = 'green';
+                    data[name].status = 'red';
                 }
             }
 
