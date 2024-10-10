@@ -12,41 +12,34 @@ async function fetchWeatherData(data, io) {
             const response = await axios.get(url);
             const newData = response.data;
 
-            // Initialiser stasjonen dersom det er første gang
             if (!data[name]) {
                 data[name] = { ...newData, lastInvalidTime: null, lastValidTime: null, status: 'red' };
             }
 
-            // Sjekk om data er ugyldige
             const isInvalidData = !newData.date || Object.values(newData).some(value => value === null || value === '');
 
             if (isInvalidData) {
-                // Hvis dataene er ugyldige, beregn tid siden siste gyldige oppdatering
                 if (!data[name].lastInvalidTime) {
                     data[name].lastInvalidTime = new Date();
                 }
 
                 const diffSeconds = data[name].lastValidTime ? (new Date() - data[name].lastValidTime) / 1000 : STALE_THRESHOLD_SECONDS + 1;
 
-                // Sett status basert på hvor lang tid det har gått
-                if (diffSeconds > 300) { // Mer enn 5 minutter (300 sekunder)
-                    data[name].status = 'red'; // Sett status til rød (Nede)
-                } else if (diffSeconds > 120) { // Mellom 2 og 5 minutter (120 til 300 sekunder)
-                    data[name].status = 'orange'; // Sett status til oransje (Midlertidig utilgjengelig)
+                if (diffSeconds > 300) {
+                    data[name].status = 'red';
+                } else if (diffSeconds > 120) {
+                    data[name].status = 'orange';
                 } else {
-                    data[name].status = 'green'; // Sett status til grønn (OK) for kortere enn 2 minutter
+                    data[name].status = 'green';
                 }
 
             } else {
-                // Hvis gyldige data mottas, oppdater stasjonen og sett status til grønn
                 data[name].lastInvalidTime = null;
 
-                // Oppdater dataene for stasjonen
                 for (const key in newData) {
                     data[name][key] = newData[key];
                 }
 
-                // Sett tidspunktet for siste gyldige oppdatering
                 let lastValidTime = new Date();
                 const [hours, minutes] = (newData.date || '').split(':').map(Number);
                 if (!isNaN(hours) && !isNaN(minutes)) {
@@ -57,20 +50,17 @@ async function fetchWeatherData(data, io) {
 
                 data[name].lastValidTime = lastValidTime;
 
-                // Beregn hvor lang tid siden siste gyldige oppdatering
                 const diffSeconds = (new Date() - lastValidTime) / 1000;
 
-                // Sett status som grønn bare hvis oppdateringen er fersk nok
                 if (diffSeconds < STALE_THRESHOLD_SECONDS) {
-                    data[name].status = 'green'; // Grønn (OK) hvis det er mindre enn STALE_THRESHOLD_SECONDS (5 minutter)
+                    data[name].status = 'green';
                 } else if (diffSeconds > 300) {
-                    data[name].status = 'red'; // Sett til rød (Nede) etter 5 minutter
+                    data[name].status = 'red';
                 } else if (diffSeconds > 120) {
-                    data[name].status = 'orange'; // Sett til oransje (Midlertidig utilgjengelig) etter 2 minutter
+                    data[name].status = 'orange';
                 }
             }
 
-            // Send oppdatering til frontend via sockets
             io.sockets.emit('file-content', { [name]: data[name] });
 
         } catch (error) {
@@ -88,20 +78,17 @@ async function fetchWeatherData(data, io) {
                     data[name].lastInvalidTime = new Date();
                 }
 
-                // Beregn tid siden siste gyldige oppdatering
                 const diffSeconds = data[name].lastValidTime ? (new Date() - data[name].lastValidTime) / 1000 : STALE_THRESHOLD_SECONDS + 1;
 
-                // Sett status basert på hvor lang tid det har gått
-                if (diffSeconds > 300) { // Mer enn 5 minutter
+                if (diffSeconds > 300) { 
                     data[name].status = 'red';
-                } else if (diffSeconds > 120) { // Mellom 2 og 5 minutter
+                } else if (diffSeconds > 120) {
                     data[name].status = 'orange';
                 } else {
-                    data[name].status = 'green'; // Grønn (OK) hvis det har gått mindre enn 2 minutter
+                    data[name].status = 'green';
                 }
             }
 
-            // Send oppdatering til frontend via sockets
             io.sockets.emit('file-content', { [name]: data[name] });
         }
     }
