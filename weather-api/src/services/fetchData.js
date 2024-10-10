@@ -24,7 +24,7 @@ async function fetchWeatherData(data, io) {
                 }
 
                 const diffSeconds = data[name].lastValidTime
-                    ? (new Date() - data[name].lastValidTime) / 1000
+                    ? (new Date().getTime() - data[name].lastValidTime.getTime()) / 1000
                     : STALE_THRESHOLD_SECONDS + 1;
 
                 if (diffSeconds <= 120) {
@@ -42,13 +42,22 @@ async function fetchWeatherData(data, io) {
                     data[name][key] = newData[key];
                 }
 
-                let lastValidTime = new Date();
-                const [hours, minutes] = (newData.date || '').split(':').map(Number);
-                if (!isNaN(hours) && !isNaN(minutes)) {
-                    lastValidTime.setHours(hours, minutes, 0, 0);
-                    // Sørg for at lastValidTime ikke er i fremtiden
-                    if (lastValidTime > new Date()) {
-                        lastValidTime.setDate(lastValidTime.getDate() - 1);
+                let lastValidTime;
+                if (newData.dateTime) {
+                    lastValidTime = new Date(newData.dateTime);
+                    if (isNaN(lastValidTime)) {
+                        lastValidTime = new Date();
+                    }
+                } else if (newData.date) {
+                    const [hours, minutes] = newData.date.split(':').map(Number);
+                    if (!isNaN(hours) && !isNaN(minutes)) {
+                        lastValidTime = new Date();
+                        lastValidTime.setUTCHours(hours, minutes, 0, 0);
+                        if (lastValidTime > new Date()) {
+                            lastValidTime.setUTCDate(lastValidTime.getUTCDate() - 1);
+                        }
+                    } else {
+                        lastValidTime = new Date();
                     }
                 } else {
                     lastValidTime = new Date();
@@ -56,7 +65,8 @@ async function fetchWeatherData(data, io) {
 
                 data[name].lastValidTime = lastValidTime;
 
-                const diffSeconds = (new Date() - lastValidTime) / 1000;
+                const now = new Date();
+                const diffSeconds = (now.getTime() - lastValidTime.getTime()) / 1000;
 
                 if (diffSeconds <= 120) {
                     data[name].status = 'green';
@@ -85,7 +95,7 @@ async function fetchWeatherData(data, io) {
                 }
 
                 const diffSeconds = data[name].lastValidTime
-                    ? (new Date() - data[name].lastValidTime) / 1000
+                    ? (new Date().getTime() - data[name].lastValidTime.getTime()) / 1000
                     : STALE_THRESHOLD_SECONDS + 1;
 
                 if (diffSeconds <= 120) {
