@@ -55,6 +55,8 @@
         return 'fas fa-wind';
       case 'lightning':
         return 'fas fa-bolt';
+        case 'snow':
+        return 'fas fa-snowflake';
       default:
         return 'fas fa-exclamation-triangle';
     }
