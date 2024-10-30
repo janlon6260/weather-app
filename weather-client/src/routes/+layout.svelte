@@ -13,7 +13,7 @@
 	<title>Været på Sunnmøre</title>
 	<meta name="description" content="Gir sanntidsoppdatert værdata fra ulike lokasjoner rundt om på Sunnmøre. Brukeren kan også datosøket på været som har vært." />
 	<link rel="manifest" href="/manifest.webmanifest" />
-	<link rel="apple-touch-icon" href="/icons/icon-512x512.png" />
+	<link rel="apple-touch-icon" href="/icons/pwa-512x512.png" />
 	<meta name="theme-color" content="#ffffff">
 </svelte:head>
 
