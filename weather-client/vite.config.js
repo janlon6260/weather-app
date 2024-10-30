@@ -11,7 +11,7 @@ export default defineConfig({
       manifest: {
         name: 'Været på Sunnmøre',
         short_name: 'Sunnmørsvær',
-        description: 'Gir sanntidsoppdatert værdata fra ulike lokasjoner rundt om på Sunnmøre. Brukeren kan også datosøket på været som har vært.',
+        description: 'Gir sanntidsoppdatert værdata fra ulike lokasjoner rundt om på Sunnmøre. Brukeren kan også datosøke på været som har vært.',
         theme_color: '#ffffff',
         icons: [
           {
@@ -31,6 +31,9 @@ export default defineConfig({
             purpose: 'any maskable'
           }
         ]
+      },
+      workbox: {
+        navigateFallback: '/src/app.html',
       }
     })
   ]
