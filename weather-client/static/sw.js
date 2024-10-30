@@ -1,6 +1,6 @@
 const CACHE_NAME = 'v1';
 const CACHE_ASSETS = [
-    '/src/app.html',
+    '/app.html',
     '/manifest.webmanifest',
     '/icons/pwa-192x192.png',
     '/icons/pwa-512x512.png'
@@ -53,7 +53,7 @@ self.addEventListener('fetch', (event) => {
                 });
 
                 return response;
-            }).catch(() => caches.match('/src/app.html'));
+            }).catch(() => caches.match('/app.html'));
         })
     );
 });

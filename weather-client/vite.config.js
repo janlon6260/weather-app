@@ -33,7 +33,7 @@ export default defineConfig({
         ]
       },
       workbox: {
-        navigateFallback: '/src/app.html',
+        navigateFallback: '/app.html',
       }
     })
   ]
