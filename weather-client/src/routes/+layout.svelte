@@ -2,7 +2,7 @@
 	import Header from './Header.svelte';
 	import './styles.css';
 
-	if ('serviceWorker' in navigator) {
+	if (typeof navigator !== 'undefined' && 'serviceWorker' in navigator) {
 		navigator.serviceWorker.register('/sw.js').catch((error) => {
 		});
 	}
