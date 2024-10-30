@@ -1,6 +1,6 @@
 const CACHE_NAME = 'v1';
 const CACHE_ASSETS = [
-    '/app.html',  // Stien til app.html må være riktig for produksjon
+    '/src/app.html',
     '/manifest.webmanifest',
     '/icons/pwa-192x192.png',
     '/icons/pwa-512x512.png'
@@ -13,7 +13,7 @@ self.addEventListener('install', (event) => {
                 return cache.addAll(CACHE_ASSETS);
             })
             .catch((error) => {
-                console.error('Caching assets feilet:', error);
+                console.error("Caching assets failed during install:", error);
             })
             .then(() => self.skipWaiting())
     );
@@ -42,29 +42,24 @@ self.addEventListener('fetch', (event) => {
                 return cachedResponse;
             }
 
-            const fetchRequest = event.request.clone();
-
-            return fetch(fetchRequest)
-                .then((response) => {
-                    if (!response || response.status !== 200 || response.type !== 'basic') {
-                        return response;
-                    }
-
-                    const responseToCache = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(event.request, responseToCache);
-                    });
-
+            return fetch(event.request).then((response) => {
+                if (!response || response.status !== 200 || response.type !== 'basic') {
                     return response;
-                })
-                .catch(() => caches.match('/app.html'))  // Fallback til app.html i cachen
+                }
+
+                const responseToCache = response.clone();
+                caches.open(CACHE_NAME).then((cache) => {
+                    cache.put(event.request, responseToCache);
+                });
+
+                return response;
+            }).catch(() => caches.match('/src/app.html'));
         })
     );
 });
 
 self.addEventListener('push', (event) => {
     const data = event.data ? event.data.json() : {};
-
     const title = data.title || 'Melding';
     const options = {
         body: data.body || 'Du har en ny melding',

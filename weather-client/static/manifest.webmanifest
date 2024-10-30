@@ -2,7 +2,7 @@
   "id": "/",
   "name": "Været på Sunnmøre",
   "short_name": "Sunnmørsvær",
-  "description": "Gir sanntidsoppdatert værdata fra ulike lokasjoner rundt om på Sunnmøre. Brukeren kan også datosøket på været som har vært.",
+  "description": "Gir sanntidsoppdatert værdata fra ulike lokasjoner rundt om på Sunnmøre. Brukeren kan også datosøke på været som har vært.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
