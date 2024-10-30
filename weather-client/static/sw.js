@@ -1,24 +1,24 @@
 const CACHE_NAME = 'v1';
 const CACHE_ASSETS = [
-    '/',
+    '/src/app.html',
     '/manifest.webmanifest',
     '/icons/pwa-192x192.png',
     '/icons/pwa-512x512.png'
 ];
 
 self.addEventListener('install', (event) => {
-
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then((cache) => {
                 return cache.addAll(CACHE_ASSETS);
+            })
+            .catch((error) => {
             })
             .then(() => self.skipWaiting())
     );
 });
 
 self.addEventListener('activate', (event) => {
-
     event.waitUntil(
         caches.keys().then((cacheNames) => {
             return Promise.all(
@@ -35,7 +35,6 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-
     event.respondWith(
         caches.match(event.request).then((cachedResponse) => {
             if (cachedResponse) {
@@ -51,14 +50,14 @@ self.addEventListener('fetch', (event) => {
                     }
 
                     const responseToCache = response.clone();
-
                     caches.open(CACHE_NAME).then((cache) => {
                         cache.put(event.request, responseToCache);
                     });
 
                     return response;
-                });
-        }).catch(() => caches.match('/offline.html'))
+                })
+                .catch(() => caches.match('/src/app.html'))
+        })
     );
 });
 
@@ -76,7 +75,6 @@ self.addEventListener('push', (event) => {
 });
 
 self.addEventListener('notificationclick', (event) => {
-
     event.notification.close();
     event.waitUntil(
         clients.openWindow('/')
