@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
     import { io } from 'socket.io-client';
     import Parameter from '$lib/components/Parameter.svelte';
-    import TrendPopup from '$lib/components/TrendPopup.svelte'; // Lag en TrendPopup-komponent for å vise trenden
+    import TrendPopup from '$lib/components/TrendPopup.svelte';
   
     let socket;
     let loaded = false;
@@ -14,8 +14,7 @@
       socket = io(import.meta.env.VITE_API_URL);
   
       socket.on('file-content', (data) => {
-        // Oppdater parametere basert på data
-        parameters = [/* din kode for å sette parametere */];
+        parameters = [];
         loaded = true;
       });
   

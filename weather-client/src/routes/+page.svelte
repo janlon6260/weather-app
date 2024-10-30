@@ -199,30 +199,45 @@
   <meta name="author" content="Longvastøl Data">
 </svelte:head>
 
-<div class="status-line" on:click={toggleExpand}>
+<div
+  class="status-line"
+  on:click={toggleExpand}
+  on:keydown={(e) => e.key === 'Enter' && toggleExpand(e)}
+  role="button"
+  tabindex="0">
   <span>Status værstasjoner:</span>
   <span class="{hasIssues ? 'red-circle' : (hasTemporaryIssues ? 'orange-circle' : 'green-circle')}"></span>
   <span>{hasIssues ? 'Problemer' : (hasTemporaryIssues ? 'OK' : 'OK')}</span>
   <span class="toggle-text">{isExpanded ? 'Vis mindre' : 'Vis mer'}</span>
 </div>
 
+
 {#if isExpanded}
 <div class="station-status-list" transition:slide>
-  <div class="station">
+  <div
+    class="station"
+    role="button"
+    tabindex="0">
     <span>Skodje:</span>
     <span class="{skodjeIsDown === 'red' ? 'red-circle' : (skodjeIsDown === 'orange' ? 'orange-circle' : 'green-circle')}"></span>
     <span>{skodjeIsDown === 'red' ? 'Nede' : (skodjeIsDown === 'orange' ? 'Midlertidig utilgjengelig' : 'OK')}</span>
     <span> - Siste oppdatering: {weather.Skodje.date}</span>
   </div>
-  
-  <div class="station">
+
+  <div
+    class="station"
+    role="button"
+    tabindex="0">
     <span>Håhjem:</span>
     <span class="{hahjemIsDown === 'red' ? 'red-circle' : (hahjemIsDown === 'orange' ? 'orange-circle' : 'green-circle')}"></span>
     <span>{hahjemIsDown === 'red' ? 'Nede' : (hahjemIsDown === 'orange' ? 'Midlertidig utilgjengelig' : 'OK')}</span>
     <span> - Siste oppdatering: {weather.Hahjem.date}</span>
   </div>
-  
-  <div class="station">
+
+  <div
+    class="station"
+    role="button"
+    tabindex="0">
     <span>Longva:</span>
     <span class="{longvaIsDown === 'red' ? 'red-circle' : (longvaIsDown === 'orange' ? 'orange-circle' : 'green-circle')}"></span>
     <span>{longvaIsDown === 'red' ? 'Nede' : (longvaIsDown === 'orange' ? 'Midlertidig utilgjengelig' : 'OK')}</span>

@@ -33,6 +33,12 @@
     }
   }
 
+  function closePopupIfOverlayClicked(event) {
+    if (event.target === event.currentTarget) {
+      closePopup();
+    }
+  }
+
   const typeLabelMap = {
     temperature: 'Temperaturtrend',
     humidity: 'Luftfuktighetstrend',
@@ -222,6 +228,13 @@
       dataLoaded = true;
       createChart();
     }
+
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') closePopup();
+    };
+    window.addEventListener('keydown', handleEscape);
+
+    return () => window.removeEventListener('keydown', handleEscape);
   });
 
   $: if (chartCanvas) {
@@ -249,11 +262,30 @@
   });
 </script>
 
-<div class="popup-overlay" on:click={closePopup}>
-  <div class="popup" on:click|stopPropagation>
-    <h2 class="title"><b>{chartTitle}</b></h2>
-    <button class="close-btn" on:click={closePopup}>X</button>
-    <div class="trend-data">
+<div
+  class="popup-overlay"
+  on:click={closePopupIfOverlayClicked}
+  on:keydown={(e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      closePopup();
+    }
+  }}
+  role="button"
+  tabindex="0"
+  aria-label="Lukk popup">
+
+  <div
+    class="popup"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="popup-title">
+
+    <h2 id="popup-title" class="title"><b>{chartTitle}</b></h2>
+
+    <button class="close-btn" on:click={closePopup} aria-label="Lukk">X</button>
+
+    <div class="trend-data" role="region" aria-live="polite">
       {#if error}
         <p>Ingen data tilgjengelig</p>
       {:else if trendData.length > 0}
@@ -275,6 +307,7 @@
     </div>
   </div>
 </div>
+
 
 <style>
   .popup-overlay {

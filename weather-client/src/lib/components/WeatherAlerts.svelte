@@ -55,7 +55,7 @@
         return 'fas fa-wind';
       case 'lightning':
         return 'fas fa-bolt';
-        case 'snow':
+      case 'snow':
         return 'fas fa-snowflake';
       default:
         return 'fas fa-exclamation-triangle';
@@ -80,8 +80,7 @@
       minute: '2-digit',
       hour12: false,
     };
-    const formattedDateTime = new Date(dateTime).toLocaleString('no-NO', options).replace(',', ' klokken');
-    return formattedDateTime;
+    return new Date(dateTime).toLocaleString('no-NO', options).replace(',', ' klokken');
   }
 </script>
 
@@ -164,7 +163,12 @@
 {#if alerts.length > 0}
   <div class="alerts-wrapper">
     {#each alerts as alert, index (alert.id)}
-      <div class="alert-box {getSeverityClass(alert.properties.severity)}" on:click={() => toggleAlert(index)}>
+      <div
+        class="alert-box {getSeverityClass(alert.properties.severity)}"
+        on:click={() => toggleAlert(index)}
+        on:keydown={(e) => e.key === 'Enter' && toggleAlert(index)}
+        role="button"
+        tabindex="0">
         <h3 class="alert-header">
           <i class="{getIcon(alert.properties.event)}"></i>
           {alert.properties.eventAwarenessName}
@@ -187,5 +191,4 @@
       </div>
     {/each}
   </div>
-{:else}
 {/if}

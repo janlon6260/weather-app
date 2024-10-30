@@ -178,7 +178,7 @@
   display: flex;
   flex-direction: column;
 }
-
+/**
 .parameter-box table {
   width: 100%;
   border-collapse: collapse;
@@ -194,4 +194,5 @@
 .parameter-box th {
   background-color: #f2f2f2;
 }
+  **/
 </style>
