@@ -1,6 +1,6 @@
 const CACHE_NAME = 'v1';
 const CACHE_ASSETS = [
-    '/src/app.html',
+    '/app.html',  // Stien til app.html må være riktig for produksjon
     '/manifest.webmanifest',
     '/icons/pwa-192x192.png',
     '/icons/pwa-512x512.png'
@@ -13,6 +13,7 @@ self.addEventListener('install', (event) => {
                 return cache.addAll(CACHE_ASSETS);
             })
             .catch((error) => {
+                console.error('Caching assets feilet:', error);
             })
             .then(() => self.skipWaiting())
     );
@@ -56,7 +57,7 @@ self.addEventListener('fetch', (event) => {
 
                     return response;
                 })
-                .catch(() => caches.match('/src/app.html'))
+                .catch(() => caches.match('/app.html'))  // Fallback til app.html i cachen
         })
     );
 });
