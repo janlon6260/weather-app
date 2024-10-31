@@ -38,7 +38,7 @@
     class="pull-to-refresh"
   >
     {#if refreshing}
-      <div class="refresh-indicator">Oppdaterer...</div>
+      <div class="refresh-indicator">Oppdaterer siden...</div>
     {/if}
     <slot></slot>
   </div>
@@ -50,11 +50,11 @@
     }
     .refresh-indicator {
       position: absolute;
-      top: 10px;
+      top: 50px;
       width: 100%;
       text-align: center;
-      font-size: 1.2em;
-      color: #555;
+      font-size: 1.5em;
+      color: #f50606;
     }
   </style>
   
