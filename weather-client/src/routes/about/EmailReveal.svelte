@@ -10,7 +10,7 @@
   <button
     on:click={revealEmail}
     style="cursor: pointer; color: blue; text-decoration: underline; background: none; border: none; padding: 0; font: inherit;">
-    Klikk her for å vise e-postadresse
+    Vis e-postadresse
   </button>
 {/if}
 
