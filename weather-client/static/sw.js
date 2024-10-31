@@ -33,18 +33,24 @@ self.addEventListener('fetch', (event) => {
             if (cachedResponse) {
                 return cachedResponse;
             }
-            return fetch(event.request.clone())
-                .then((response) => {
-                    if (!response || response.status !== 200 || response.type !== 'basic') {
-                        return response;
-                    }
-                    const responseToCache = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => {
-                        cache.put(event.request, responseToCache);
-                    });
-                    return response;
-                })
-                .catch(() => caches.match('/'));
-        })
+
+            return fetch(event.request.clone()).then((networkResponse) => {
+                if (
+                    !networkResponse || 
+                    networkResponse.status !== 200 || 
+                    networkResponse.type !== 'basic'
+                ) {
+                    return networkResponse;
+                }
+
+                const responseToCache = networkResponse.clone();
+                
+                caches.open(CACHE_NAME).then((cache) => {
+                    cache.put(event.request, responseToCache);
+                });
+
+                return networkResponse;
+            });
+        }).catch(() => caches.match('/'))
     );
 });

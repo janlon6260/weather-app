@@ -2,6 +2,7 @@
   import WeatherAlerts from './../lib/components/WeatherAlerts.svelte';
   import Parameter from '$lib/components/Parameter.svelte';
   import TrendPopup from '$lib/components/TrendPopup.svelte';
+  import PullToRefresh from '$lib/components/PullToRefresh.svelte';
   import { onMount } from 'svelte';
   import { io } from 'socket.io-client';
   import weatherData from '$lib/objects/weather-data';
@@ -105,6 +106,11 @@
     longvaIsDown = weather.Flemsoy.status;
   }
 
+  function refreshPage() {
+    loaded = false;
+    socket.emit('refreshData');
+  }
+
   function handleFetchTrend(event) {
     const { location, type } = event.detail;
     selectedLocation = location;
@@ -199,6 +205,8 @@
   <meta name="author" content="Longvastøl Data">
 </svelte:head>
 
+<PullToRefresh on:refresh={refreshPage}>
+
 <div
   class="status-line"
   on:click={toggleExpand}
@@ -270,6 +278,8 @@
 {#if showPopup}
   <TrendPopup {selectedLocation} {selectedType} {trendData} onClose={handleClosePopup} />
 {/if}
+
+</PullToRefresh>
 
 <style>
   .status-line {

@@ -34,6 +34,30 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: '/',
+        runtimeCaching: [
+          {
+            urlPattern: ({ request }) => request.destination === 'document',
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'html-cache',
+              expiration: {
+                maxEntries: 5,
+                maxAgeSeconds: 24 * 60 * 60,
+              },
+            },
+          },
+          {
+            urlPattern: ({ request }) => request.destination === 'image',
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'image-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 7 * 24 * 60 * 60,
+              },
+            },
+          }
+        ]
       }
     })
   ]
