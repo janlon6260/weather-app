@@ -7,6 +7,7 @@
   import { io } from 'socket.io-client';
   import weatherData from '$lib/objects/weather-data';
   import { fade, slide } from 'svelte/transition';
+  import metadata from '$lib/data/metadata.json';
 
   import BF0 from '$lib/images/0.svg';
   import BF1 from '$lib/images/1.svg';
@@ -198,11 +199,26 @@
 </script>
 
 <svelte:head>
-  <title>Været på Sunnmøre</title>
-  <meta name="description" content="Været på Sunnmøre" />
+  <title>{metadata.title}</title>
+  <meta name="description" content={metadata.description} />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <meta name="keywords" content="Været på Skodje, Været på Håhjem, Været på Longva, Været i Ålesund, Flemsøy, Skuløy, Skodje, Ålesund, Haram, Været på Sunnmøre, Vind Sunnmøre, Været på Skuløya/Flemsøya, Været på Skuløya, Været på Flemsøya, Været på Nordøyane, Longva, Flem, Haramsøy, Lepsøy, Fjørtoft, Været i Haram, Nordøyane, Vind Haram, Vind Sunnmøre">
-  <meta name="author" content="Longvastøl Data">
+  <meta name="keywords" content={metadata.keywords} />
+  <meta name="author" content={metadata.author} />
+
+  <script type="application/ld+json">
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WeatherForecast",
+      "name": metadata.title,
+      "description": metadata.description,
+      "location": metadata.location,
+      "provider": {
+        "@type": "Organization",
+        "name": metadata.author,
+        "url": metadata.providerUrl
+      }
+    })}
+  </script>
 </svelte:head>
 
 <PullToRefresh on:refresh={refreshPage}>

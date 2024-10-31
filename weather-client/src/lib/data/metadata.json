@@ -1,0 +1,16 @@
+{
+  "title": "Været på Sunnmøre",
+  "description": "Oppdaterte værmeldinger og prognoser for Sunnmøre inkludert Skodje, Håhjem, Longva, Ålesund, Haramsøy, Lepsøy, Fjørtoft, og flere steder. Vind, temperatur, og værvarsel for hele regionen.",
+"keywords": "Været på Sunnmøre, Værmelding Sunnmøre, Vær Ålesund, Vær Skodje, Vær Longva, Været Håhjem, Vind Sunnmøre, Værvarsel Ålesund, Skuløya vær, Flemsøya vær, Nordøyane vær, Haramsøy vær, Fjørtoft vær, Værprognose Ålesund, Sunnmøre vind, Sunnmøre temperatur, Værradar Sunnmøre, Haramsøy vind, Sunnmøre værvarsel, Solskinn Sunnmøre, Regn Sunnmøre, Skodde Sunnmøre, Stormvarsel Sunnmøre, Temperatur Ålesund, Ålesund vind, Båtvær Sunnmøre, Turvær Sunnmøre, Fjellvær Sunnmøre, Havvær Sunnmøre, Værprognose Skodje, Været på Haramsøy, Vindforhold Sunnmøre, Sunnmøre værdata, Lokalt vær Sunnmøre, Ålesund temperatur, Været i Haram, Værvarsel Fjørtoft, Fjørtoft vind, Værutsikt Sunnmøre, Sunnmøre værprognose, Ålesund værvarsel, Klimadata Sunnmøre, Skodje vind, Været i Longva, Sunnmøre stormvarsel, Lyn Sunnmøre, Torden Sunnmøre, Lufttrykk Sunnmøre, Lokalt vær Ålesund, Sunnmøre UV-stråling, Soloppgang Sunnmøre, Solnedgang Sunnmøre, Oppdaterte værmeldinger Sunnmøre, Live vær Sunnmøre, Sunnmøre langtidsvarsel, Helgevær Sunnmøre, Helgevær Ålesund, Vær Sunnmøre fjord, Vær Sunnmøre kyst, Sunnmøre værkart, Ålesund vindforhold, Sunnmøre bølgevarsel, Turløypevær Sunnmøre, Skodje værprognose, Ålesund værdata, Nordøyane værmelding, Sunnmøre værnyheter, Ålesund regnvarsel, Sunnmøre sjøvær, Vindstyrke Sunnmøre, Ålesund nedbør, Sunnmøre nedbørvarsel, Værvarsel for Sunnmørsfjellene, Sunnmøre fjellvær, Sunnmøre værgraf, Værhistorikk Sunnmøre, Sunnmøre vindstyrke, Håhjem værmelding, Sunnmøre snøvarsel, Værforhold Longva, Ålesund værnyheter, Sunnmøre klimadata, Skuløya vindprognose, Sunnmøre luftfuktighet, Sunnmøre UV-indeks, Ålesund klimavarsel, Sunnmøre vindkast, Sunnmøre bølgehøyde, Sunnmøre tidevann, Sunnmøre vær-app, Lokal værmelding Sunnmøre, Skodje været nå, Sunnmøre værtrend, Sunnmøre skydekke, Sunnmøre stormprognose, Ålesund bølgevarsel, Sunnmøre meteorologi, Fjellvær Haramsøy, Sunnmøre stormobservasjon, Ålesund solskinn, Sunnmøre værutsikter, Vindmålinger Sunnmøre, Sunnmøre snødybde, Værprognoser Skuløya, Sunnmøre værmelding time for time",
+  "author": "Longvastøl Data",
+  "providerUrl": "https://sunnmorsver.no",
+  "location": {
+    "@type": "Place",
+    "name": "Sunnmøre",
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 62.5043623,
+      "longitude": 6.6974609
+    }
+  }
+}

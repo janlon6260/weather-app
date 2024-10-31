@@ -1,10 +1,29 @@
 <script>
 	import EmailReveal from './EmailReveal.svelte';
+	import metadata from '$lib/data/metadata.json';
   </script>
 <svelte:head>
 	<title>Om denne siden</title>
 	<meta name="description" content="Om denne værsiden" />
+	<meta name="keywords" content={metadata.keywords} />
+	<meta name="author" content={metadata.author} />
+  
+	<script type="application/ld+json">
+	  {JSON.stringify({
+		"@context": "https://schema.org",
+		"@type": "WeatherForecast",
+		"name": metadata.title,
+		"description": metadata.description,
+		"location": metadata.location,
+		"provider": {
+		  "@type": "Organization",
+		  "name": metadata.author,
+		  "url": metadata.providerUrl
+		}
+	  })}
+	</script>
 </svelte:head>
+
 <h1>Om denne siden</h1>
 <center>
 <b>Værstasjon Skodje sentrum, Ålesund:</b>
