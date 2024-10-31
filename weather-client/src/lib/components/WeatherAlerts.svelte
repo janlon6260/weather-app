@@ -175,7 +175,9 @@
           <span class="toggle-text">{alert.expanded ? 'Vis mindre' : 'Vis mer'}</span>
         </h3>
         <div class="alert-details">
-          <b>Grad:</b> {getSeverityLabel(alert.properties.severity)}
+          {#if alerts.length === 1 || alert.expanded}
+            <b>Grad:</b> {getSeverityLabel(alert.properties.severity)}
+          {/if}
         </div>
         {#if alert.expanded}
           <div class="alert-content" transition:slide>
