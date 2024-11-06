@@ -1,7 +1,7 @@
 const urls = {
-    'Skodje': 'https://skodje.org/verdata/customclientraw.txt',
-    'Flemsoy': 'https://skodje.org/verdata/flem/customclientraw.txt',
-    'Hahjem': 'https://skodjesbf.com/verdata/customclientraw.txt'
+    'Skodje': 'https://data.sunnmorsver.no/skodje/customclientraw.txt',
+    'Flemsoy': 'https://data.sunnmorsver.no/flemsoy/customclientraw.txt',
+    'Hahjem': 'https://data.sunnmorsver.no/hahjem/customclientraw.txt'
 };
 
 module.exports = { urls };
