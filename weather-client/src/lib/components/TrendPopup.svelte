@@ -195,15 +195,21 @@
   async function fetchLastYearData() {
     isFetchingLastYear = true;
     try {
-      const response = await fetch(`${API_URL}/fetch24HourTrendLastYear`, {
+      const response = await fetch(`${API_URL}/trend`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ station: selectedLocation, type: selectedType }),
+        body: JSON.stringify({
+          station: selectedLocation,
+          type: selectedType,
+          filter: {
+            trend24hLastYear: true
+          }
+        }),
       });
       const result = await response.json();
 
       if (response.ok) {
-        trendDataLastYear = result.data;
+        trendDataLastYear = result.data.trend24hLastYear || [];
 
         if (trendDataLastYear.length > 0) {
           lastYearDataAvailable = true;
@@ -223,11 +229,37 @@
     }
   }
 
-  onMount(() => {
-    if (trendData.length > 0) {
-      dataLoaded = true;
-      createChart();
+  async function fetchTrendData() {
+    try {
+      const response = await fetch(`${API_URL}/trend`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          station: selectedLocation,
+          type: selectedType,
+          filter: {
+            trendLast24h: true
+          }
+        }),
+      });
+      const result = await response.json();
+
+      if (response.ok) {
+        trendData = result.data.trendLast24h || [];
+        dataLoaded = true;
+        createChart();
+      } else {
+        console.error(result.error);
+        error = 'Ingen data tilgjengelig';
+      }
+    } catch (err) {
+      console.error(err);
+      error = 'Feil ved lasting av data';
     }
+  }
+
+  onMount(() => {
+    fetchTrendData();
 
     const handleEscape = (e) => {
       if (e.key === 'Escape') closePopup();

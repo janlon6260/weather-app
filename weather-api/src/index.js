@@ -6,9 +6,9 @@ const { Server } = require('socket.io');
 const cors = require('cors');
 const { fetchWeatherData, getSocketHandlers } = require('./services/fetchData');
 const fetch24HourTrendRoute = require('./routes/fetch24HourTrend');
-const fetch24HourTrendLastYearRoute = require('./routes/fetch24HourTrendLastYear'); // Import the new route
 const searchByDateRoute = require('./routes/searchByDate');
 const confirmRoute = require('./routes/confirm');
+const fetchHistoricalData = require('./routes/fetchHistoricalData');
 
 const app = express();
 const server = createServer(app);
@@ -22,7 +22,6 @@ const io = new Server(server, {
 app.use(cors());
 app.use(express.json());
 
-// Disable caching
 app.use((req, res, next) => {
     res.set('Cache-Control', 'no-store');
     next();
@@ -32,10 +31,10 @@ app.get('/', (req, res) => {
     res.send('Serving you fresh weather data throughout the day. Enjoy!');
 });
 
-app.use('/fetch24HourTrend', fetch24HourTrendRoute);
-app.use('/fetch24HourTrendLastYear', fetch24HourTrendLastYearRoute); // Register the new route
+app.use('/trend', fetch24HourTrendRoute);
 app.use('/searchByDate', searchByDateRoute);
 app.use('/confirm', confirmRoute);
+app.use('/fetchhistoricaldata', fetchHistoricalData);
 
 const data = {};
 fetchWeatherData(data, io);

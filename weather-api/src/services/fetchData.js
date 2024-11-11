@@ -46,7 +46,6 @@ async function fetchWeatherData(data, io) {
                 const [hours, minutes] = (newData.date || '').split(':').map(Number);
                 if (!isNaN(hours) && !isNaN(minutes)) {
                     lastValidTime.setHours(hours, minutes, 0, 0);
-                    // Sørg for at lastValidTime ikke er i fremtiden
                     if (lastValidTime > new Date()) {
                         lastValidTime.setDate(lastValidTime.getDate() - 1);
                     }

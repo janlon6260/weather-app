@@ -20,8 +20,8 @@
 <!-- 			<li aria-current={$page.url.pathname === '/watertemp' ? 'page' : undefined}>
 				<a href="/">Badetemperaturer</a>
 			</li> -->
-			<li aria-current={$page.url.pathname === '/searchdate' ? 'page' : undefined}>
-				<a href="/searchdate">Datosøk</a>
+			<li aria-current={$page.url.pathname === '/historicalweatherdata' ? 'page' : undefined}>
+				<a href="/historicalweatherdata">Historikk</a>
 			</li>
 			<li aria-current={$page.url.pathname === '/about' ? 'page' : undefined}>
 				<a href="/about">Om</a>
