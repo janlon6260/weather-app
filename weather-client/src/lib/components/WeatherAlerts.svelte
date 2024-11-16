@@ -60,7 +60,7 @@
       case 'snow':
         return 'fas fa-snowflake';
       case 'stormSurge':
-        return 'fas fa-water-rise'; 
+        return 'fas fa-water-arrow-up'; 
       default:
         return 'fas fa-exclamation-triangle';
     }
