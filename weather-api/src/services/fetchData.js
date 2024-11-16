@@ -16,7 +16,17 @@ async function fetchWeatherData(data, io) {
                 data[name] = { ...newData, lastInvalidTime: null, lastValidTime: null, status: 'red' };
             }
 
-            const isInvalidData = !newData.date || Object.values(newData).some(value => value === null || value === '');
+            const isInvalidData = !newData.date || Object.entries(newData).some(([key, value]) => {
+                if (typeof value === 'string') {
+                    value = value.trim(); // Fjerner mellomrom rundt strengen
+                }
+                // Tomme strenger er tillatt
+                if (value === '') {
+                    return false;
+                }
+                // Sjekk for null eller ugyldige numeriske verdier
+                return value === null || (typeof value === 'string' && value.trim() === '');
+            });
 
             if (isInvalidData) {
                 if (!data[name].lastInvalidTime) {
@@ -39,13 +49,14 @@ async function fetchWeatherData(data, io) {
                 data[name].lastInvalidTime = null;
 
                 for (const key in newData) {
-                    data[name][key] = newData[key];
+                    data[name][key] = typeof newData[key] === 'string' ? newData[key].trim() : newData[key];
                 }
 
                 let lastValidTime = new Date();
                 const [hours, minutes] = (newData.date || '').split(':').map(Number);
                 if (!isNaN(hours) && !isNaN(minutes)) {
                     lastValidTime.setHours(hours, minutes, 0, 0);
+                    // Sørg for at lastValidTime ikke er i fremtiden
                     if (lastValidTime > new Date()) {
                         lastValidTime.setDate(lastValidTime.getDate() - 1);
                     }
