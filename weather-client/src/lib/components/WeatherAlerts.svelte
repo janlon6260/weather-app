@@ -8,7 +8,9 @@
     const response = await fetch('https://api.met.no/weatherapi/metalerts/2.0/current.json?lat=62.50488&lon=6.69015');
     if (response.ok) {
       const data = await response.json();
-      alerts = data.features.map((alert, index) => ({ ...alert, id: alert.id || index, expanded: false }));
+      alerts = data.features
+        .filter(alert => alert.properties.severity !== 'Minor')
+        .map((alert, index) => ({ ...alert, id: alert.id || index, expanded: false }));
     }
   });
 
@@ -57,6 +59,8 @@
         return 'fas fa-bolt';
       case 'snow':
         return 'fas fa-snowflake';
+      case 'stormSurge':
+        return 'fas fa-water-rise'; 
       default:
         return 'fas fa-exclamation-triangle';
     }
